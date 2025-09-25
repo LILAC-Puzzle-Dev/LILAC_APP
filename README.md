@@ -1,0 +1,3 @@
+# LILAC APP INFO
+
+The detailed information will be available soon...
