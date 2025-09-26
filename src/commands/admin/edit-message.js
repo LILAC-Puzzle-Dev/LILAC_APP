@@ -37,7 +37,7 @@ module.exports = {
         {
             name: 'channel',
             description: 'The channel that contains the target message',
-            type: 7, // 7 代表频道类型:cite[7]
+            type: 7,
             required: true,
         },
         {
