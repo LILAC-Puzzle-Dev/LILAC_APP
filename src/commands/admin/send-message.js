@@ -10,7 +10,7 @@ module.exports = {
     callback: async (client, interaction) => {
         //Main code
         const targetChannelID = interaction.options.get('channel').value;
-        const messageContent = interaction.options.get('message').value;
+        let messageContent = interaction.options.get('message').value;
 
         await interaction.deferReply();
 
@@ -22,7 +22,9 @@ module.exports = {
             return;
         };
 
-        targetChannel.send(messageContent);
+        messageContent = messageContent.replace(/\\n/g, '\n').replace(/<br>/g, '\n');
+
+        await targetChannel.send(messageContent);
 
         interaction.editReply("The message has been successfully sent.")
     },
