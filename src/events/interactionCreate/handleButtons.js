@@ -1,5 +1,15 @@
 module.exports = async (client, interaction) => {
-    if (interaction.isButton() && interaction.customId === "1395667039250550865"){
+
+    const customIds = [
+        '1395667039250550865',
+        '1417146504459583529',
+        '1419144798564126742',
+        '1419145191486656714',
+        '1417146582536814643',
+        '1417146815563698349',
+    ];
+
+    if (interaction.isButton() && customIds.includes(interaction.customId)) {
         try {
             await interaction.deferReply({ ephemeral: true });
             const role = interaction.guild.roles.cache.get(interaction.customId);

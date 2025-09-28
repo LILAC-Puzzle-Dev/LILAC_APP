@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, GatewayIntentBits} = require('discord.js');
+const { Client, GatewayIntentBits, Partials} = require('discord.js');
 const eventHandler = require('./handlers/eventHandler');
 const mongoose = require('mongoose');
 const client = new Client({
@@ -10,6 +10,7 @@ const client = new Client({
         GatewayIntentBits.GuildPresences,
         GatewayIntentBits.GuildMembers,
     ],
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 });
 
 (async () => {

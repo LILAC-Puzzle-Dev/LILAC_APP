@@ -10,6 +10,8 @@ const client = new Client({
     ],
 });
 
+/*
+
 const roles = [
     {
         id: '1395667039250550865',
@@ -45,7 +47,7 @@ const messageEmbed = {
     },
 };
 
-
+*/
 
 
 //Verify message
@@ -183,6 +185,150 @@ All of the rules above are subject to change at any time, and thus will be regul
         console.log(error);
     }
 })
+*/
+
+//Auto Roles
+
+/*
+
+const messageEmbed = {
+    color: 0xd8e2dc,
+    title: 'LILAC Puzzle Official Auto Roles',
+    description: '**React below give yourself the respective roles!**',
+    fields: [
+        {
+            name: '📋`Announcements Ping`',
+            value: 'React to get notified for big announcements and events relating to LILAC.',
+        },
+        {
+            name: '📩`Discord Updates Ping`',
+            value: 'React to get notified for LILAC Puzzle Official server updates and information in the future.',
+        },
+        {
+            name: '🎉`Giveaways Ping`',
+            value: 'React to get notified for large giveaways and events.',
+        },
+        {
+            name: '🧩`Puzzles Ping`',
+            value: 'React to get notified for new puzzles and quiz',
+        },
+        {
+            name: '🎫`Events Ping`',
+            value: 'React to get notified of upcoming LILAC events hosted by the Event Committee.',
+        },
+    ],
+    footer: {
+        text: 'LILAC Official',
+    },
+};
+
+const announcements = [
+    {
+        id: '1417146504459583529',
+        label: 'Announcements',
+        emoji: '📋',
+    }
+]
+
+const discord_updates = [
+    {
+        id: '1419144798564126742',
+        label: 'Discord Updates',
+        emoji: '📩',
+    }
+]
+
+const giveaways = [
+    {
+        id: '1419145191486656714',
+        label: 'Giveaways',
+        emoji: '🎉',
+    }
+]
+
+const puzzles = [
+    {
+        id: '1417146582536814643',
+        label: 'Puzzles',
+        emoji: '🧩',
+    }
+]
+
+const events = [
+    {
+        id: '1417146815563698349',
+        label: 'Puzzles',
+        emoji: '🎫',
+    }
+]
+
+client.on('ready', async (c) => {
+    try {
+        const channel = await client.channels.cache.get('1420392583690981396');
+        if (!channel) return;
+
+        const row = new ActionRowBuilder();
+
+        announcements.forEach((role) => {
+            row.components.push(
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Secondary)
+                    .setLabel(role.label)
+                    .setEmoji(role.emoji)
+                    .setCustomId(role.id)
+            )
+        })
+
+        discord_updates.forEach((role) => {
+            row.components.push(
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Secondary)
+                    .setLabel(role.label)
+                    .setEmoji(role.emoji)
+                    .setCustomId(role.id)
+            )
+        })
+
+        giveaways.forEach((role) => {
+            row.components.push(
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Secondary)
+                    .setLabel(role.label)
+                    .setEmoji(role.emoji)
+                    .setCustomId(role.id)
+            )
+        })
+
+        puzzles.forEach((role) => {
+            row.components.push(
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Secondary)
+                    .setLabel(role.label)
+                    .setEmoji(role.emoji)
+                    .setCustomId(role.id)
+            )
+        })
+
+        events.forEach((role) => {
+            row.components.push(
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Secondary)
+                    .setLabel(role.label)
+                    .setEmoji(role.emoji)
+                    .setCustomId(role.id)
+            )
+        })
+
+        await channel.send({
+            embeds: [messageEmbed],
+            components: [row],
+        })
+        process.exit();
+    } catch (error){
+        console.log(error);
+    }
+})
+
 */
 
 client.login(process.env.TOKEN);
