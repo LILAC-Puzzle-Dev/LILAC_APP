@@ -189,7 +189,7 @@ All of the rules above are subject to change at any time, and thus will be regul
 
 //Auto Roles
 
-/*
+
 
 const messageEmbed = {
     color: 0xd8e2dc,
@@ -210,7 +210,7 @@ const messageEmbed = {
         },
         {
             name: '🧩`Puzzles Ping`',
-            value: 'React to get notified for new puzzles and quiz',
+            value: 'React to get notified for new puzzles and quiz.',
         },
         {
             name: '🎫`Events Ping`',
@@ -329,6 +329,6 @@ client.on('ready', async (c) => {
     }
 })
 
-*/
+
 
 client.login(process.env.TOKEN);
