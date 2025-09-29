@@ -189,7 +189,7 @@ All of the rules above are subject to change at any time, and thus will be regul
 
 //Auto Roles
 
-
+/*
 
 const messageEmbed = {
     color: 0xd8e2dc,
@@ -329,6 +329,40 @@ client.on('ready', async (c) => {
     }
 })
 
+ */
 
+
+//Role Info
+
+const messageEmbed = {
+    color: 0xd8e2dc,
+    title: 'LILAC Puzzle Official Role Information',
+    description: '**React below give yourself the respective roles!**',
+    fields: [
+        {
+            name: '📋`Announcements P`',
+            value: 'React to get notified for big announcements and events relating to LILAC.',
+        },
+        {
+            name: '📩`Discord Updates Ping`',
+            value: 'React to get notified for LILAC Puzzle Official server updates and information in the future.',
+        },
+        {
+            name: '🎉`Giveaways Ping`',
+            value: 'React to get notified for large giveaways and events.',
+        },
+        {
+            name: '🧩`Puzzles Ping`',
+            value: 'React to get notified for new puzzles and quiz.',
+        },
+        {
+            name: '🎫`Events Ping`',
+            value: 'React to get notified of upcoming LILAC events hosted by the Event Committee.',
+        },
+    ],
+    footer: {
+        text: 'LILAC Official',
+    },
+};
 
 client.login(process.env.TOKEN);
