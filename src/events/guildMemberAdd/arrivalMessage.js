@@ -21,7 +21,7 @@ module.exports = async (client, member) => {
         const response = await openai.chat.completions.create({
             model: "deepseek-reasoner",
             messages: [
-                {role: "user", content: `Please welcome me to LILAC Puzzle Official, and politely ask me to check the server rules. My name is ${member.displayName}.`},
+                {role: "user", content: `Please welcome me to LILAC Puzzle Official, and politely ask me to check the server rules. My name is ${member.displayName}. Do not reply with "Of course!", just send the welcome message directly.`},
             ],
         }).catch((error) => console.log(error));
 
