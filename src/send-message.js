@@ -88,7 +88,7 @@ client.on('ready', async (c) => {
         if (!channel) return;
 
         await channel.send({
-            content: `**General Rules**
+            content: `# General Rules
 
 1. Be respectful and tolerant, and refrain from harassing anyone or being rude in general. Profanity in itself is tolerated on a moderate level, as long as it's not directed to a person or group. 
 
@@ -157,7 +157,7 @@ client.on('ready', async (c) => {
         if (!channel) return;
 
         await channel.send({
-            content: `**LILAC-Puzzle-Specific Rules**
+            content: `# LILAC-Puzzle-Specific Rules
 
 1. All content produced by LILAC Puzzle Official in any form (including but not limited to text, pictures, audio, video) is protected by law and, unless otherwise specified, complies with the CC-BY-NC-ND 4.0 Creative Commons License. Users must credit the author and may not modify the original work. You can't take the content for commercial use. It should be noted that the sidebar is also an important part of the puzzle, and simply cutting off the sidebar is also considered an infringement.
 
@@ -176,7 +176,7 @@ client.on('ready', async (c) => {
         if (!channel) return;
 
         await channel.send({
-            content: `**IMPORTANT**
+            content: `# IMPORTANT
 
 All of the rules above are subject to change at any time, and thus will be regularly updated every so often. If you are found to be breaking any of our rules, staff reserve the right to punish you appropriately.`,
         })
@@ -257,7 +257,7 @@ const puzzles = [
 const events = [
     {
         id: '1417146815563698349',
-        label: 'Puzzles',
+        label: 'Events',
         emoji: '🎫',
     }
 ]
@@ -329,40 +329,102 @@ client.on('ready', async (c) => {
     }
 })
 
- */
-
+*/
 
 //Role Info
 
-const messageEmbed = {
-    color: 0xd8e2dc,
-    title: 'LILAC Puzzle Official Role Information',
-    description: '**React below give yourself the respective roles!**',
-    fields: [
-        {
-            name: '📋`Announcements P`',
-            value: 'React to get notified for big announcements and events relating to LILAC.',
-        },
-        {
-            name: '📩`Discord Updates Ping`',
-            value: 'React to get notified for LILAC Puzzle Official server updates and information in the future.',
-        },
-        {
-            name: '🎉`Giveaways Ping`',
-            value: 'React to get notified for large giveaways and events.',
-        },
-        {
-            name: '🧩`Puzzles Ping`',
-            value: 'React to get notified for new puzzles and quiz.',
-        },
-        {
-            name: '🎫`Events Ping`',
-            value: 'React to get notified of upcoming LILAC events hosted by the Event Committee.',
-        },
-    ],
-    footer: {
-        text: 'LILAC Official',
-    },
-};
+/*
+
+client.on('ready', async (c) => {
+
+    const roleChannel = await client.channels.cache.get('1420392583690981396');
+
+    const guild = await client.guilds.cache.get('1134508276080447498');
+
+    const announcements = await guild.roles.cache.get('1417146504459583529');
+    const discordUpdates = await guild.roles.cache.get('1419144798564126742');
+    const giveaways = await guild.roles.cache.get('1419145191486656714');
+    const puzzles = await guild.roles.cache.get('1417146582536814643');
+    const events = await guild.roles.cache.get('1417146815563698349');
+
+    const messageEmbed = {
+        color: 0xd8e2dc,
+        title: 'Notification Roles',
+        description: `Most of these roles are available in **<#1420392583690981396>**.
+
+**<@&1417146504459583529>**
+> Get notified for big announcements and events relating to LILAC.
+
+**<@&1419145191486656714>**
+> Get notified for LILAC Puzzle Official server updates and information in the future.
+
+**<@&1419144798564126742>**
+> Get notified for large giveaways and events.
+
+**<@&1419144798564126742>**
+> Get notified for new puzzles and quiz.
+
+**<@&1417146815563698349>**
+> Get notified of upcoming LILAC events hosted by the Event Committee.`,
+
+    };
+
+    try {
+        const channel = await client.channels.cache.get('1420392656055308422');
+        if (!channel) return;
+
+        await channel.send({
+            embeds: [messageEmbed],
+        })
+        process.exit();
+    } catch (error){
+        console.log(error);
+    }
+})
+*/
+/*
+client.on('ready', async (c) => {
+
+    const roleChannel = await client.channels.cache.get('1420392583690981396');
+
+    const messageEmbed = {
+        color: 0xd8e2dc,
+        title: 'General Management Roles',
+        description: `Roles for management purpose. Do **NOT** ping them directly.
+
+**<@&1397010007412838400>**
+> LILAC official Discord account.
+
+**<@&1416319348855013427>**
+> Official server management application.
+
+**<@&1395592329913438239>**
+**<@&1426210171297726494>**
+**<@&1426210340970037400>**
+**<@&1395665478583586896>**
+**<@&1426210680104685678>**
+**<@&1426210853157470278>**
+> Staff of the discord server. Trail Moderator application will be available soon.
+
+**<@&1426213206145110026>**
+> Moderates the VCs. Application will be available soon.
+
+**<@&1395778347811733565>**
+> Software development team from LILAC.`,
+    };
+
+    try {
+        const channel = await client.channels.cache.get('1420392656055308422');
+        if (!channel) return;
+
+        await channel.send({
+            embeds: [messageEmbed],
+        })
+        process.exit();
+    } catch (error){
+        console.log(error);
+    }
+})
+*/
 
 client.login(process.env.TOKEN);
