@@ -1,6 +1,6 @@
 module.exports = async (client, message) => {
 
-    if (message.inGuild() || message.author.bot) return;
+    if (!message.inGuild() || message.author.bot) return;
 
     const messageContent = await message.content();
 
