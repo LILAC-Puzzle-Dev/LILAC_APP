@@ -17,6 +17,9 @@ LILAC APP is developed by **LILAC Development Team**, under the guidance of **LI
 - LILAC Development Team:
     - YC_Eagle
     - Trilleo
+    - KoolShow
+    - lan
+    - Bulaisien
 - LILAC Staff Team:
     - YC_Eagle
 ### 2.2. Service Providers
