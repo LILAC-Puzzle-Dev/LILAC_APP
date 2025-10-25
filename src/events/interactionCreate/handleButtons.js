@@ -7,6 +7,7 @@ module.exports = async (client, interaction) => {
         '1419145191486656714',
         '1417146582536814643',
         '1417146815563698349',
+        '1431518267729514598',
     ];
 
     if (interaction.isButton() && customIds.includes(interaction.customId)) {

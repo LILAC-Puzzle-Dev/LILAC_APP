@@ -62,7 +62,10 @@ module.exports = async (client, interaction) => {
 > Get notified for new puzzles and quiz.
 
 **<@&1417146815563698349>**
-> Get notified of upcoming LILAC events hosted by the Event Committee.`,
+> Get notified of upcoming LILAC events hosted by the Event Committee.
+
+**<@&1431518267729514598>**
+> Get notified when a Word of the Week event start or a new hint is out.`,
                 footer: {
                     text: `LILAC Puzzle Official`
                 },

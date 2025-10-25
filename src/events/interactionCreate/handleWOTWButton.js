@@ -7,7 +7,7 @@ module.exports = async (client, interaction) => {
     if (interaction.isButton() && interaction.customId === "wotw-button") {
         try {
 
-            const modal = new ModalBuilder().setTitle("Word Of The Week").setCustomId(`wotw-${interaction.member.id}`);
+            const modal = new ModalBuilder().setTitle("Word of the Week").setCustomId(`wotw-${interaction.member.id}`);
             const textInput = new TextInputBuilder()
                 .setCustomId("wotw-input")
                 .setLabel("Submit your answer below")
@@ -69,14 +69,14 @@ module.exports = async (client, interaction) => {
 
             if (wotwOriginalWord === wotwTextLower){
 
-                await modalInteraction.editReply("Your answer is correct! Congratulations on winning this Word Of The Week event!")
+                await modalInteraction.editReply("Your answer is correct! Congratulations on winning this Word of the Week event!")
 
                 wordOfTheWeek.isLive = false;
 
                 const messageChannel = await client.channels.cache.get('1428273198348369920');
 
                 const messageEmbed = {
-                    title: "Word Of The Week Ended",
+                    title: "Word of the Week Ended",
                     description: "Someone has found the right answer! The event review will come out soon...",
                     fields: [
                         {
