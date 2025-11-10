@@ -28,10 +28,6 @@ module.exports = async (client, message) => {
             if (level.xp >= calculateLevelXp(level.level)){
                 level.xp = 0;
                 level.level += 1;
-
-                message.channel.send(`=============================================\n${message.member} you have leveled up to **level ${level.level}**.\n=============================================`);
-                message.channel.send("To check the ranks of you/others, you can use the command /level.")
-                message.author.send("You have leveled up! Go to LILAC Puzzlehunt Official for more information!")
             }
 
             await level.save().catch((err) => {
