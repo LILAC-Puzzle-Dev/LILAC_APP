@@ -27,10 +27,6 @@ ${message.content}`,
         },
     };
 
-    if (message.attachments.size > 0) {
-        messageEmbed.setImage(message.attachments.first().url);
-    }
-
     logChannel.send({ embeds: [messageEmbed] }).catch(console.error);
 
 }
