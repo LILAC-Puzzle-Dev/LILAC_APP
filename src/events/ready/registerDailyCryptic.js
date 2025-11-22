@@ -125,7 +125,7 @@ module.exports = (client) => {
         }
 
         await channel.send({
-            content: "<@#1417146582536814643>",
+            content: "<@&1417146582536814643>",
             embeds: [messageEmbedFirst, messageEmbedSecond],
         })
 
