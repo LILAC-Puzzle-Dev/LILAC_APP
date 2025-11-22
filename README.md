@@ -18,7 +18,7 @@ LILAC APP is developed by **LILAC Development Team**, under the guidance of **LI
     - YC_Eagle
     - Trilleo
     - KoolShow
-    - lan
+    - Ian
     - Bulaisien
 - LILAC Staff Team:
     - YC_Eagle
@@ -96,11 +96,36 @@ Open a form where you can submit suggestion. Only functional in specific channel
 Usage: `/rps <member>`  
 Challenge a member to play rock paper scissors with you.
 
+### 3.6. Puzzle
+#### /cryptic-create
+Usage: `/cryptic-create <author> <clue> <explanation> <answer>`  
+Create a new cryptic entry (@Puzzle Creator only).
+#### /wotw-create
+Usage: `/wotw-create <word>`  
+Create a new WotW event (Admins only).
+#### /wotw-disable
+Usage: `/wotw-disable <gameId>`  
+Disable an ongoing WotW event (Admins only).
+
 ***
 
 ## 4. Functions
 
-*Coming soon...*
+### 4.1. Moderation Management
+#### Member Message Log
+Automatically log all the messages sent by members in the server.  
+**Important Note**  
+__This function is crucial to punishment decision. For your privacy, all the logs can only be reviewed by admins with @Sr Admin role. So feel free to engage in the community.__
+#### Interaction Manager
+Handle all the interactions sent to the bot (buttons, text inputs, commands, etc.) and output specific functions.
+#### Event Scheduler
+Perform specific events at scheduled time.
+
+### 4.2. Community System
+#### Chat Score
+XP-based leveling system for the community server.
+#### Puzzle Mastery
+Rating system for your puzzle-solving ability.
 
 ***
 
