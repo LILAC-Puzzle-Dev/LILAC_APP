@@ -79,5 +79,6 @@ module.exports = {
             type: 9,
             required: false,
         }
-    ]
+    ],
+    deleted: true,
 }
