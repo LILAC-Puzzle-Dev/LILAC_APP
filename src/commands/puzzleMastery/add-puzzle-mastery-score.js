@@ -2,6 +2,8 @@ const { PermissionFlagsBits } = require('discord.js');
 const UserPuzzleMasteryScore = require('../../models/UserPuzzleMasteryScore');
 const PuzzleMasteryRole = require('../../models/PuzzleMasteryRole');
 
+const announcementChannelId = '1469544882392666142';
+
 module.exports = {
     callback: async (client, interaction) => {
         if (!interaction.inGuild()) {
@@ -79,6 +81,13 @@ module.exports = {
 
             if (roleAdded && !roleAdded.includes('(Already had)')) {
                 replyText += `\n\n🔼 **Role Upgraded:** ${roleAdded}`;
+
+                const announcementChannel = await interaction.guild.channels.fetch(announcementChannelId);
+                if (announcementChannel) {
+                    await announcementChannel.send({
+                        content: `**Congratulations** ${targetUser}! You've reached a score of **${updatedProfile.score}** and earned the ${roleAdded} role!`
+                    });
+                }
             }
 
             if (rolesRemoved.length > 0) {
