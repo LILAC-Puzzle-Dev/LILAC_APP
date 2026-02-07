@@ -27,7 +27,7 @@ Discord JavaScript integration API provider: [Discord.js](https://discord.js.org
 Cloud database provider: [MongoDB](https://www.mongodb.com/)  
 Artificial Intelligence structure provider: [OpenAI](https://openai.com/)  
 Artificial Intelligence API provider: [DeepSeek](https://deepseek.com/) (deepseek-reasoner)  
-Terms of Services archive server provider: [Trilleo Network](http://trilleo.net/)
+Terms of Services archive server provider: [Trilleo Network](https://trilleo.net/)
 
 ***
 
@@ -106,6 +106,28 @@ Create a new WotW event (Admins only).
 #### /wotw-disable
 Usage: `/wotw-disable <gameId>`  
 Disable an ongoing WotW event (Admins only).
+
+### 3.7. Chatscore
+#### /add-chatscore-role
+Usage: `/add-chatscore-role <role> <threshold>`  
+Add a reward role for Chatscore (Admins only).
+#### /chatscore
+Usage: `/chatscore [user]`  
+Check your or another member's total chatscore and monthly chatscore.
+#### /monthly-chatscore-leaderboard
+Usage: `/monthly-chatscore-leaderboard`  
+Show the top chatscore for the current month.
+
+### 3.8. Puzzle Mastery
+#### /add-puzzle-mastery-role
+Usage: `/add-puzzle-mastery-role <role> <threshold>`  
+Add a reward role for Puzzle Mastery (Admins only).
+#### /add-puzzle-mastery-score
+Usage: `/add-puzzle-mastery-score <user> <score>`  
+Add Puzzle Mastery Score to a specific user (Admins only).
+#### /puzzle-mastery
+Usage: `/puzzle-mastery [user]`  
+Check your or another member's total Puzzle Mastery Score and current role level.
 
 ***
 
