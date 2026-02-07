@@ -214,22 +214,22 @@ Coming Soon...`,
                 description: `These roles will be automatically assigned when you complete certain amount of puzzles.
 
 **<@&1427638740951502910>**
-> Threshold Coming Soon...
+> 5 Puzzle Mastery score.
 
 **<@&1427638934443397141>**
-> Threshold Coming Soon...
+> 15 Puzzle Mastery score.
 
 **<@&1427639133664182445>**
-> Threshold Coming Soon...
+> 50 Puzzle Mastery score.
 
 **<@&1427639140102574160>**
-> Threshold Coming Soon...
+> 200 Puzzle Mastery score.
 
 **<@&1427639145530134599>**
-> Threshold Coming Soon...
+> 750 Puzzle Mastery score.
 
 **<@&1427639149833359511>**
-> Threshold Coming Soon...`,
+> 1500 Puzzle Mastery score.`,
                 footer: {
                     text: `LILAC Puzzle Official`
                 },

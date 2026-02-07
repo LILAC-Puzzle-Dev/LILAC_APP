@@ -1,9 +1,19 @@
 const cron = require('node-cron');
 const Cryptic = require("../../models/Cryptic")
+const FeatureSwitch = require('../../models/FeatureSwitch');
 
 module.exports = (client) => {
 
     async function sendCryptic() {
+
+        const featureConfig = await FeatureSwitch.findOne({
+            guildId: '1134508276080447498',
+            featureName: 'daily-cryptic'
+        });
+
+        if (featureConfig && !featureConfig.isEnabled) {
+            return;
+        }
 
         const channelId = '1437028473683185676';
         const channel = await client.channels.cache.get(channelId);
