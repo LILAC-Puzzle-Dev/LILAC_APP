@@ -8,13 +8,14 @@ Every commit message must follow this syntax:
 
 ## Approved Tags
 
-| Tag | Usage | Example |
-| :--- | :--- | :--- |
-| **Feature** | Adding brand-new functionality or commands. | `Feature: add puzzle-mastery score tracking` |
-| **Fix** | Repairing bugs, crashes, or logic errors. | `Fix: resolve role hierarchy error in score update` |
-| **Improvement** | Refining existing code, UX, or performance. | `Improvement: add tiered role removal logic` |
-| **Internal** | Documentation, comments, or repository maintenance. | `Internal: update COMMIT_STRUCTURE instructions` |
-| **Backend** | Database schema changes or configuration updates. | `Backend: add FeatureSwitch model for toggles` |
+| Tag             | Usage                                               | Example                                             |
+|:----------------|:----------------------------------------------------|:----------------------------------------------------|
+| **Feature**     | Adding brand-new functionality or commands.         | `Feature: Add puzzle-mastery score tracking`        |
+| **Fix**         | Repairing bugs, crashes, or logic errors.           | `Fix: Resolve role hierarchy error in score update` |
+| **Improvement** | Refining existing code, UX, or performance.         | `Improvement: Add tiered role removal logic`        |
+| **Internal**    | Documentation, comments, or repository maintenance. | `Internal: Update COMMIT_STRUCTURE instructions`    |
+| **Backend**     | Database schema changes or configuration updates.   | `Backend: Add FeatureSwitch model for toggles`      |
+| **Update**      | Bot version changes.                                | `Update: 1.0.0 release`                             |
 
 ## Best Practices
 * **Use Present Tense:** Write "Add feature" instead of "Added feature."
