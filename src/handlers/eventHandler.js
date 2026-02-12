@@ -6,14 +6,14 @@ module.exports = (client) => {
 
     for (const eventFolder of eventFolders) {
         const eventFiles = getAllFiles(eventFolder);
-        eventFiles.sort((a, b) => a > b);
+        eventFiles.sort((a, b) => (a > b ? 1 : -1));
 
         const eventName = eventFolder.replace(/\\/g, '/').split('/').pop();
 
-        client.on(eventName, async (arg) => {
+        client.on(eventName, async (...args) => {
             for (const eventFile of eventFiles) {
                 const eventFunction = require(eventFile);
-                await eventFunction(client, arg);
+                await eventFunction(client, ...args);
             }
         });
     }

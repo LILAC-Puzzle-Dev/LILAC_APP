@@ -2,6 +2,7 @@ const UserVoiceTime = require('../../models/UserVoiceTime');
 const VCRole = require('../../models/VCRole');
 
 module.exports = async (client, oldState, newState) => {
+    if (!newState || !newState.guild || !newState.member) return;
 
     const member = newState.member;
     if (member.user.bot) return;
