@@ -1,16 +1,14 @@
-const { Client, Interaction } = require('discord.js');
+const { Client, Interaction , EmbedBuilder} = require('discord.js');
 const User = require('../../models/User');
 
-const dailyAmount = 500;
+const baseAmount = 500;
+const streakBonus = 100;
+const maxStreakBonus = 2000;
 
 module.exports = {
     name: 'daily',
-    description: 'Collect your dailies!',
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
+    description: 'Collect your dailies and build your streak!',
+
     callback: async (client, interaction) => {
         if (!interaction.inGuild()) {
             interaction.reply({
@@ -29,34 +27,67 @@ module.exports = {
             };
 
             let user = await User.findOne(query);
+            const now = new Date();
 
             if (user) {
                 const lastDailyDate = user.lastDaily.toDateString();
-                const currentDate = new Date().toDateString();
+                const currentDate = now.toDateString();
 
                 if (lastDailyDate === currentDate) {
-                    interaction.editReply(
-                        'You have already collected your dailies today. Come back tomorrow!'
+                    return interaction.editReply(
+                        `You have already collected your dailies today. Current Streak: **${user.streak}** days.`
                     );
-                    return;
                 }
 
-                user.lastDaily = new Date();
+                const yesterday = new Date(now);
+                yesterday.setDate(yesterday.getDate() - 1);
+
+                if (lastDailyDate === yesterday.toDateString()) {
+                    user.streak += 1;
+                } else {
+                    user.streak = 1;
+                }
+
+                user.lastDaily = now;
+
             } else {
                 user = new User({
                     ...query,
-                    lastDaily: new Date(),
+                    lastDaily: now,
+                    streak: 1,
+                    balance: 0,
                 });
             }
 
-            user.balance += dailyAmount;
+            let reward = baseAmount + ((user.streak - 1) * streakBonus);
+
+            if (reward > maxStreakBonus) reward = maxStreakBonus;
+
+            user.balance += reward;
             await user.save();
 
-            interaction.editReply(
-                `$${dailyAmount} was added to your balance. Your new balance is $${user.balance}`
-            );
+            const dailyEmbed = new EmbedBuilder()
+                .setColor('#00FF7F')
+                .setTitle('Daily Reward Collected!')
+                .setThumbnail(interaction.user.displayAvatarURL())
+                .addFields(
+                    { name: 'Total Reward', value: `\`$${reward}\``, inline: true },
+                    { name: 'Current Streak', value: `\`${user.streak} Days\` 🔥`, inline: true },
+                    { name: 'New Balance', value: `\`$${user.balance}\``, inline: false },
+                    {
+                        name: 'Reward Breakdown',
+                        value: `Base: $${baseAmount}\nStreak Bonus: +$${reward - baseAmount}`,
+                        inline: false
+                    }
+                )
+                .setFooter({ text: 'Keep the streak going for more rewards!' })
+                .setTimestamp();
+
+            await interaction.editReply({ embeds: [dailyEmbed] });
+
         } catch (error) {
             console.log(`Error with /daily: ${error}`);
+            interaction.editReply('There was an error claiming your daily reward.');
         }
     },
 };
