@@ -74,6 +74,24 @@ Remove a channel from the Suggestion group. Previous suggestions in this channel
 #### /giveaway
 Usage: `/giveaway <time> <reward>`  
 Set up a giveaway event for members to join.
+#### /toggle-feature
+Usage: `/toggle-feature <feature> <status>`  
+Turn a specific bot feature on or off.
+#### /add-vc-role
+Usage: `/add-vc-role <role> <minutes>`  
+Set a role reward for voice chat activity.
+#### /manage-announcements
+Usage: `/manage-announcements <action> <channel>`  
+Manage which channels automatically publish news.
+#### /send-json
+Usage: `/send-json <channel>`  
+Pop up a modal to paste JSON data and send the message.
+#### /manage-buttons add
+Usage: `/manage-buttons add <message_id> <row> <label> <id_or_url> <style> [emoji]`  
+Add a new button to an existing bot message.
+#### /manage-buttons remove
+Usage: `/manage-buttons remove <message_id> <id_or_url>`  
+Remove a specific button from an existing bot message.
 
 ### 3.3. Economy
 #### /balance
@@ -129,6 +147,11 @@ Add Puzzle Mastery Score to a specific user (Admins only).
 Usage: `/puzzle-mastery [user]`  
 Check your or another member's total Puzzle Mastery Score and current role level.
 
+### 3.9. Miscellaneous
+#### /vc-time
+Usage: `/vc-time [user]`  
+Check your or another member's total time spent in voice channels.
+
 ***
 
 ## 4. Functions
@@ -148,6 +171,8 @@ Perform specific events at scheduled time.
 XP-based leveling system for the community server.
 #### Puzzle Mastery
 Rating system for your puzzle-solving ability.
+#### VC Tracker
+Tracks members' active voice chat time and provides role reward.
 
 ***
 
