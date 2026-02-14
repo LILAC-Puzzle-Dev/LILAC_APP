@@ -1,6 +1,6 @@
 {
   "name": "lilac-app",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "description": "Program for LILAC Puzzle Official management application.",
   "main": "src/index.js",
   "scripts": {
