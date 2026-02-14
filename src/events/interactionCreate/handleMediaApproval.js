@@ -1,4 +1,4 @@
-const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 
 module.exports = async (client, interaction) => {
     if (!interaction.isButton()) return;
@@ -52,17 +52,20 @@ module.exports = async (client, interaction) => {
     }
 
     if (action === 'reject') {
-        if (targetUser) {
-            try {
-                await targetUser.send(`Your media submission in **${interaction.guild.name}** was rejected by an admin.`);
-            } catch (err) {
-            }
-        }
+        const modal = new ModalBuilder()
+            .setCustomId(`media_reject_modal_${targetUserId}_${targetChannelId}_${interaction.message.id}`)
+            .setTitle('Rejection Reason');
 
-        const rejectedEmbed = EmbedBuilder.from(interaction.message.embeds[0])
-            .setColor('#FF0000')
-            .setTitle('⛔ REJECTED');
+        const reasonInput = new TextInputBuilder()
+            .setCustomId('reject_reason')
+            .setLabel("Why is this being rejected?")
+            .setStyle(TextInputStyle.Paragraph)
+            .setPlaceholder('e.g., Low quality, off-topic, or violates rules.')
+            .setRequired(true);
 
-        await interaction.update({ embeds: [rejectedEmbed], components: [] });
+        const firstActionRow = new ActionRowBuilder().addComponents(reasonInput);
+        modal.addComponents(firstActionRow);
+
+        await interaction.showModal(modal);
     }
 };
