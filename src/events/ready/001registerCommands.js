@@ -1,4 +1,4 @@
-const { testServer, devs } = require('../../../config.json')
+const { testServer } = require('../../../config.json')
 const getLocalCommands = require('../../utils/getLocalCommands')
 const getApplicationCommands = require('../../utils/getApplicationCommands')
 const areCommandsDifferent = require('../../utils/areCommandsDifferent')

@@ -43,12 +43,19 @@ module.exports = (existingCommand, localCommand) => {
         return false;
     };
 
-    if (
-        existingCommand.description !== localCommand.description ||
-        existingCommand.options?.length !== (localCommand.options?.length || 0) ||
-        areOptionsDifferent(existingCommand.options, localCommand.options || [])
-    ) {
-        return true;
+    const localType = localCommand.type || 1;
+    const existingType = existingCommand.type || 1;
+
+    if (localType !== existingType) return true;
+
+    if (localType === 1) {
+        if (
+            existingCommand.description !== localCommand.description ||
+            existingCommand.options?.length !== (localCommand.options?.length || 0) ||
+            areOptionsDifferent(existingCommand.options, localCommand.options || [])
+        ) {
+            return true;
+        }
     }
 
     return false;
