@@ -223,14 +223,33 @@ module.exports = async (client, interaction) => {
                     }
 
                     // Save submission as complete
-                    await PuzzleSubmission.findOneAndUpdate(
-                        { user_id: interaction.user.id, game_custom_id: gameCustomId },
-                        {
-                            completion_status: 'complete',
-                            score: totalScore,
-                        },
-                        { upsert: true, new: true },
-                    );
+                    try {
+                        await PuzzleSubmission.findOneAndUpdate(
+                            { user_id: interaction.user.id, game_custom_id: gameCustomId },
+                            {
+                                completion_status: 'complete',
+                                score: totalScore,
+                            },
+                            { upsert: true, new: true },
+                        );
+                    } catch (saveError) {
+                        // Handle duplicate key (E11000) as "already submitted" so the user still gets a response
+                        if (
+                            saveError &&
+                            (saveError.code === 11000 ||
+                                (typeof saveError.message === 'string' &&
+                                    saveError.message.includes('E11000')))
+                        ) {
+                            console.warn(
+                                'Duplicate puzzle submission detected for game',
+                                gameCustomId,
+                                'user',
+                                interaction.user.id,
+                            );
+                        } else {
+                            throw saveError;
+                        }
+                    }
 
                     // Increment mastery points
                     if (totalScore > 0) {
