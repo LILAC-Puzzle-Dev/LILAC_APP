@@ -69,6 +69,22 @@ module.exports = async (client, interaction) => {
             });
         } catch (error) {
             console.error('Error in puzzle select handler for game', gameCustomId, 'user', interaction.user.id, ':', error);
+            try {
+                if (interaction.deferred || interaction.replied) {
+                    await interaction.editReply({
+                        content: '⚠️ An unexpected error occurred while loading this puzzle. Please try again later.',
+                        embeds: [],
+                        components: [],
+                    });
+                } else if (typeof interaction.isRepliable === 'function' ? interaction.isRepliable() : interaction.isRepliable) {
+                    await interaction.reply({
+                        content: '⚠️ An unexpected error occurred while loading this puzzle. Please try again later.',
+                        ephemeral: true,
+                    });
+                }
+            } catch (replyError) {
+                console.error('Failed to send error response for puzzle select handler', replyError);
+            }
         }
     }
 
