@@ -213,104 +213,56 @@ module.exports = async (client, interaction) => {
 
                         if (isCorrect) {
                             totalScore += questions[i].points;
-                    try {
-                        // Check all fields are filled
-                        const allFilled = allAnswers.every((a) => a && a.trim().length > 0);
-                        if (!allFilled) {
-                            return modalInteraction.editReply({
-                                content: '⚠️ All fields must be filled. Your submission was not recorded. You can try again.',
-                            });
                         }
 
-                        // Score the answers (case-insensitive)
-                        let totalScore = 0;
-                        const results = [];
+                        results.push({
+                            question: questions[i].title,
+                            correct: isCorrect,
+                            points: isCorrect ? questions[i].points : 0,
+                        });
+                    }
 
-                        for (let i = 0; i < questions.length; i++) {
-                            const userAnswer = allAnswers[i].trim().toLowerCase();
-                            const correctAnswer = questions[i].correct_answer.trim().toLowerCase();
-                            const isCorrect = userAnswer === correctAnswer;
+                    // Save submission as complete
+                    await PuzzleSubmission.findOneAndUpdate(
+                        { user_id: interaction.user.id, game_custom_id: gameCustomId },
+                        {
+                            completion_status: 'complete',
+                            score: totalScore,
+                        },
+                        { upsert: true, new: true },
+                    );
 
-                            if (isCorrect) {
-                                totalScore += questions[i].points;
-                            }
-
-                            results.push({
-                                question: questions[i].title,
-                                correct: isCorrect,
-                                points: isCorrect ? questions[i].points : 0,
-                            });
-                        }
-
-                        // Save submission as complete
-                        await PuzzleSubmission.findOneAndUpdate(
-                            { user_id: interaction.user.id, game_custom_id: gameCustomId },
+                    // Increment mastery points
+                    if (totalScore > 0) {
+                        await UserPuzzleMasteryScore.findOneAndUpdate(
+                            { discordId: interaction.user.id },
                             {
-                                completion_status: 'complete',
-                                score: totalScore,
+                                $inc: { score: totalScore },
+                                $set: { username: interaction.user.username },
                             },
                             { upsert: true, new: true },
                         );
-
-                        // Increment mastery points
-                        if (totalScore > 0) {
-                            await UserPuzzleMasteryScore.findOneAndUpdate(
-                                { discordId: interaction.user.id },
-                                {
-                                    $inc: { score: totalScore },
-                                    $set: { username: interaction.user.username },
-                                },
-                                { upsert: true, new: true },
-                            );
-                        }
-
-                        // Build results embed
-                        const maxPoints = questions.reduce((sum, q) => sum + q.points, 0);
-                        const resultsEmbed = new EmbedBuilder()
-                            .setTitle(`📊 Results: ${game.title}`)
-                            .setColor(totalScore === maxPoints ? '#00FF00' : totalScore > 0 ? '#FFA500' : '#FF0000')
-                            .setDescription(`You scored **${totalScore}/${maxPoints}** point(s)!`)
-                            .setFooter({ text: `Game: ${game.custom_id}` });
-
-                        for (const r of results) {
-                            resultsEmbed.addFields({
-                                name: `${r.correct ? '✅' : '❌'} ${r.question}`,
-                                value: `${r.correct ? `+${r.points} pts` : '0 pts'}`,
-                                inline: true,
-                            });
-                        }
-
-                        await modalInteraction.editReply({
-                            embeds: [resultsEmbed],
-                        });
-                    } catch (error) {
-                        console.error(
-                            'Error processing final puzzle modal for game',
-                            gameCustomId,
-                            'user',
-                            interaction.user.id,
-                            ':',
-                            error,
-                        );
-                        const errorMessage =
-                            '❌ Sorry, something went wrong while processing your submission. Please try again later.';
-
-                        if (modalInteraction.deferred || modalInteraction.replied) {
-                            modalInteraction
-                                .editReply({
-                                    content: errorMessage,
-                                    embeds: [],
-                                })
-                                .catch(() => {});
-                        } else {
-                            modalInteraction
-                                .reply({
-                                    content: errorMessage,
-                                    ephemeral: true,
-                                })
-                                .catch(() => {});
-                        }
                     }
+
+                    // Build results embed
+                    const maxPoints = questions.reduce((sum, q) => sum + q.points, 0);
+                    const resultsEmbed = new EmbedBuilder()
+                        .setTitle(`📊 Results: ${game.title}`)
+                        .setColor(totalScore === maxPoints ? '#00FF00' : totalScore > 0 ? '#FFA500' : '#FF0000')
+                        .setDescription(`You scored **${totalScore}/${maxPoints}** point(s)!`)
+                        .setFooter({ text: `Game: ${game.custom_id}` });
+
+                    for (const r of results) {
+                        resultsEmbed.addFields({
+                            name: `${r.correct ? '✅' : '❌'} ${r.question}`,
+                            value: `${r.correct ? `+${r.points} pts` : '0 pts'}`,
+                            inline: true,
+                        });
+                    }
+
+                    await modalInteraction.editReply({
+                        embeds: [resultsEmbed],
+                    });
                 }
             }
         } catch (error) {
