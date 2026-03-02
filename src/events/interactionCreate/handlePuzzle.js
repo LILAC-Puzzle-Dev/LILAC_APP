@@ -15,10 +15,10 @@ module.exports = async (client, interaction) => {
 
     // Handle game selection from the string select menu
     if (interaction.isStringSelectMenu() && interaction.customId.startsWith('puzzle-select-')) {
+        const gameCustomId = interaction.values[0];
         try {
             await interaction.deferReply({ ephemeral: true });
 
-            const gameCustomId = interaction.values[0];
             const game = await PuzzleGame.findOne({ custom_id: gameCustomId, status: 'active' });
 
             if (!game) {
@@ -74,8 +74,8 @@ module.exports = async (client, interaction) => {
 
     // Handle "Submit Answers" button
     if (interaction.isButton() && interaction.customId.startsWith('puzzle-submit-')) {
+        const gameCustomId = interaction.customId.replace('puzzle-submit-', '');
         try {
-            const gameCustomId = interaction.customId.replace('puzzle-submit-', '');
             const game = await PuzzleGame.findOne({ custom_id: gameCustomId, status: 'active' });
 
             if (!game) {
