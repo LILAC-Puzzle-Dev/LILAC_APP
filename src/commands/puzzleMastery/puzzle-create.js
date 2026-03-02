@@ -174,7 +174,7 @@ module.exports = {
                         components: [],
                     });
                 } catch (error) {
-                    console.error('Error saving puzzle game:', error);
+                    console.error('Error saving puzzle game', customId, '(', title, '):', error);
                     return btnInteraction.update({
                         content: '❌ An error occurred while saving the game.',
                         embeds: [],

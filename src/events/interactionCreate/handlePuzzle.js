@@ -68,7 +68,7 @@ module.exports = async (client, interaction) => {
                 components: [button],
             });
         } catch (error) {
-            console.error('Error in puzzle select handler:', error);
+            console.error('Error in puzzle select handler for game', gameCustomId, 'user', interaction.user.id, ':', error);
         }
     }
 
@@ -101,7 +101,7 @@ module.exports = async (client, interaction) => {
 
             // Collect all answers across modals
             const allAnswers = [];
-            let promptInteraction;
+            let continueButtonInteraction;
 
             for (let modalIndex = 0; modalIndex < totalModals; modalIndex++) {
                 const startIdx = modalIndex * 5;
@@ -130,11 +130,11 @@ module.exports = async (client, interaction) => {
                 if (modalIndex === 0) {
                     await interaction.showModal(modal);
                 } else {
-                    await promptInteraction.showModal(modal);
+                    await continueButtonInteraction.showModal(modal);
                 }
 
                 const filter = (i) => i.customId === modalId;
-                const source = modalIndex === 0 ? interaction : promptInteraction;
+                const source = modalIndex === 0 ? interaction : continueButtonInteraction;
                 const modalInteraction = await source.awaitModalSubmit({ filter, time: 600_000 }).catch(() => null);
 
                 if (!modalInteraction) {
@@ -168,12 +168,12 @@ module.exports = async (client, interaction) => {
                         i.customId === `puzzle-continue-${gameCustomId}-${modalIndex + 1}-${interaction.user.id}` &&
                         i.user.id === interaction.user.id;
 
-                    promptInteraction = await modalInteraction.awaitMessageComponent({
+                    continueButtonInteraction = await modalInteraction.awaitMessageComponent({
                         filter: btnFilter,
                         time: 600_000,
                     }).catch(() => null);
 
-                    if (!promptInteraction) return;
+                    if (!continueButtonInteraction) return;
                 } else {
                     // Last modal - process all answers
                     await modalInteraction.deferReply({ ephemeral: true });
@@ -250,7 +250,7 @@ module.exports = async (client, interaction) => {
                 }
             }
         } catch (error) {
-            console.error('Error in puzzle submit handler:', error);
+            console.error('Error in puzzle submit handler for game', gameCustomId, 'user', interaction.user.id, ':', error);
         }
     }
 };
