@@ -225,6 +225,7 @@ module.exports = {
 
             const targetUser = interaction.options.getUser('user') || interaction.user;
             let userData = await UserAchievement.findOne({ userId: targetUser.id });
+            let selfUserData = await UserAchievement.findOne({ userId: interaction.user.id });
 
             if (!userData) {
                 userData = await UserAchievement.create({ userId: targetUser.id });
@@ -239,8 +240,9 @@ module.exports = {
                 }
 
                 const owned = userData.obtainedAchievements.includes(achievement.id);
+                const selfOwned = selfUserData.obtainedAchievements.includes(achievement.id);
 
-                if (achievement.isSecret && !owned) {
+                if (achievement.isSecret && !selfOwned) {
                     grouped[achievement.category].push('🔒 ??? [Locked]');
                 } else {
                     const status = owned ? '✅' : '⬜';
