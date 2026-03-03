@@ -16,12 +16,12 @@ module.exports = {
 
         if (activeGames.length === 0) {
             return interaction.editReply({
-                content: '📭 There are no active puzzle games right now. Check back later!',
+                content: 'There are no active puzzle games right now. Check back later!',
             });
         }
 
         const embed = new EmbedBuilder()
-            .setTitle('🧩 Active Puzzle Games')
+            .setTitle('Active Puzzle Games')
             .setDescription('Select a game below to view its questions and submit your answers!')
             .setColor('#7B68EE');
 

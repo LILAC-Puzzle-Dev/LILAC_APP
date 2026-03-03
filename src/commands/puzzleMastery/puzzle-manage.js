@@ -14,7 +14,7 @@ const PuzzleGame = require('../../models/PuzzleGame');
 
 module.exports = {
     name: 'puzzle-manage',
-    description: 'Manage an existing puzzle game (toggle status, edit fields).',
+    description: 'Manage an existing puzzle game.',
     permissionsRequired: [PermissionFlagsBits.Administrator],
     options: [
         {
@@ -33,13 +33,13 @@ module.exports = {
 
         if (!game) {
             return interaction.editReply({
-                content: `❌ No puzzle game found with custom ID \`${customId}\`.`,
+                content: `No puzzle game found with custom ID \`${customId}\`.`,
             });
         }
 
         const buildEmbed = () => {
             const embed = new EmbedBuilder()
-                .setTitle(`🧩 Managing: ${game.title}`)
+                .setTitle(`Managing: ${game.title}`)
                 .setColor(game.status === 'active' ? '#00FF00' : '#FF4444')
                 .addFields(
                     { name: 'Custom ID', value: `\`${game.custom_id}\``, inline: true },
@@ -150,7 +150,7 @@ module.exports = {
                 await game.save();
 
                 await editModalInteraction.reply({
-                    content: '✅ Game fields updated!',
+                    content: 'Game fields updated!',
                     ephemeral: true,
                 });
 
@@ -164,7 +164,7 @@ module.exports = {
         collector.on('end', (collected, reason) => {
             if (reason === 'time') {
                 interaction.editReply({
-                    content: '⏰ Management session timed out.',
+                    content: 'Management session timed out.',
                     embeds: [],
                     components: [],
                 }).catch(() => {});

@@ -74,7 +74,7 @@ module.exports = {
 
         if (!isUrlFriendly(customId)) {
             return modalInteraction.reply({
-                content: '❌ The custom ID must be URL-friendly (lowercase letters, numbers, and hyphens only, e.g. `my-puzzle-1`). Please run the command again with a valid ID.',
+                content: 'The custom ID must be URL-friendly (lowercase letters, numbers, and hyphens only, e.g. `my-puzzle-1`). Please run the command again with a valid ID.',
                 ephemeral: true,
             });
         }
@@ -82,7 +82,7 @@ module.exports = {
         const existing = await PuzzleGame.findOne({ custom_id: customId });
         if (existing) {
             return modalInteraction.reply({
-                content: `❌ A game with the custom ID \`${customId}\` already exists. Please run the command again with a unique ID.`,
+                content: `A game with the custom ID \`${customId}\` already exists. Please run the command again with a unique ID.`,
                 ephemeral: true,
             });
         }
@@ -91,7 +91,7 @@ module.exports = {
 
         const questionEmbed = () => {
             const embed = new EmbedBuilder()
-                .setTitle(`🧩 Creating: ${title}`)
+                .setTitle(`Creating: ${title}`)
                 .setDescription(`**Custom ID:** \`${customId}\`\n**Author:** ${author}\n**Description:** ${description}`)
                 .setColor('#7B68EE')
                 .setFooter({ text: `Questions added: ${questions.length}` });
@@ -143,7 +143,7 @@ module.exports = {
             if (btnInteraction.customId === `puzzle-cancel-${interaction.user.id}`) {
                 collector.stop('cancelled');
                 return btnInteraction.update({
-                    content: '❌ Puzzle creation cancelled.',
+                    content: 'Puzzle creation cancelled.',
                     embeds: [],
                     components: [],
                 });
@@ -152,7 +152,7 @@ module.exports = {
             if (btnInteraction.customId === `puzzle-save-${interaction.user.id}`) {
                 if (questions.length === 0) {
                     return btnInteraction.reply({
-                        content: '⚠️ You must add at least one question before saving.',
+                        content: 'You must add at least one question before saving.',
                         ephemeral: true,
                     });
                 }
@@ -169,14 +169,14 @@ module.exports = {
                     await game.save();
 
                     return btnInteraction.update({
-                        content: `✅ Puzzle game **${title}** (\`${customId}\`) saved with **${questions.length}** question(s)!`,
+                        content: `Puzzle game **${title}** (\`${customId}\`) saved with **${questions.length}** question(s)!`,
                         embeds: [],
                         components: [],
                     });
                 } catch (error) {
                     console.error('Error saving puzzle game', customId, '(', title, '):', error);
                     return btnInteraction.update({
-                        content: '❌ An error occurred while saving the game.',
+                        content: 'An error occurred while saving the game.',
                         embeds: [],
                         components: [],
                     });

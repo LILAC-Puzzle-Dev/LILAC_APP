@@ -22,7 +22,7 @@ module.exports = async (client, interaction) => {
             const game = await PuzzleGame.findOne({ custom_id: gameCustomId, status: 'active' });
 
             if (!game) {
-                return interaction.editReply({ content: '❌ This game is no longer active.' });
+                return interaction.editReply({ content: 'This game is no longer active.' });
             }
 
             // Check for existing completed submission
@@ -34,12 +34,12 @@ module.exports = async (client, interaction) => {
 
             if (existingSubmission) {
                 return interaction.editReply({
-                    content: `⚠️ You have already completed **${game.title}**! You scored **${existingSubmission.score}** point(s).`,
+                    content: `You have already completed **${game.title}**! You scored **${existingSubmission.score}** point(s).`,
                 });
             }
 
             const embed = new EmbedBuilder()
-                .setTitle(`🧩 ${game.title}`)
+                .setTitle(`${game.title}`)
                 .setDescription(`${game.description}\n\n*By ${game.author}*`)
                 .setColor('#7B68EE')
                 .setFooter({ text: `Game ID: ${game.custom_id} • ${game.questions.length} question(s)` });
@@ -72,13 +72,13 @@ module.exports = async (client, interaction) => {
             try {
                 if (interaction.deferred || interaction.replied) {
                     await interaction.editReply({
-                        content: '⚠️ An unexpected error occurred while loading this puzzle. Please try again later.',
+                        content: 'An unexpected error occurred while loading this puzzle. Please try again later.',
                         embeds: [],
                         components: [],
                     });
                 } else if (typeof interaction.isRepliable === 'function' ? interaction.isRepliable() : interaction.isRepliable) {
                     await interaction.reply({
-                        content: '⚠️ An unexpected error occurred while loading this puzzle. Please try again later.',
+                        content: 'An unexpected error occurred while loading this puzzle. Please try again later.',
                         ephemeral: true,
                     });
                 }
@@ -95,7 +95,7 @@ module.exports = async (client, interaction) => {
             const game = await PuzzleGame.findOne({ custom_id: gameCustomId, status: 'active' });
 
             if (!game) {
-                return interaction.reply({ content: '❌ This game is no longer active.', ephemeral: true });
+                return interaction.reply({ content: 'This game is no longer active.', ephemeral: true });
             }
 
             // One-time entry check
@@ -107,7 +107,7 @@ module.exports = async (client, interaction) => {
 
             if (existingSubmission) {
                 return interaction.reply({
-                    content: `⚠️ You have already completed **${game.title}**!`,
+                    content: `You have already completed **${game.title}**!`,
                     ephemeral: true,
                 });
             }
@@ -167,7 +167,7 @@ module.exports = async (client, interaction) => {
                 // If more modals needed, prompt the user
                 if (modalIndex < totalModals - 1) {
                     await modalInteraction.reply({
-                        content: `✅ Part ${modalIndex + 1}/${totalModals} received! Click below to continue.`,
+                        content: `Part ${modalIndex + 1}/${totalModals} received! Click below to continue.`,
                         components: [
                             new ActionRowBuilder().addComponents(
                                 new ButtonBuilder()
@@ -198,7 +198,7 @@ module.exports = async (client, interaction) => {
                     const allFilled = allAnswers.every((a) => a && a.trim().length > 0);
                     if (!allFilled) {
                         return modalInteraction.editReply({
-                            content: '⚠️ All fields must be filled. Your submission was not recorded. You can try again.',
+                            content: 'All fields must be filled. Your submission was not recorded. You can try again.',
                         });
                     }
 
@@ -268,7 +268,7 @@ module.exports = async (client, interaction) => {
         } catch (error) {
             console.error('Error in puzzle submit handler for game', gameCustomId, 'user', interaction.user.id, ':', error);
             const errorMessage =
-                '❌ An unexpected error occurred while processing your puzzle submission. Please try again later.';
+                'An unexpected error occurred while processing your puzzle submission. Please try again later.';
             try {
                 if (interaction.deferred || interaction.replied) {
                     await interaction.followUp({
