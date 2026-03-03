@@ -19,7 +19,7 @@ class ExampleAchievement {
 
         // Visibility
         this.isSecret = true;
-        this.isDisabled = false;
+        this.isDisabled = true;
     }
 
     /**
