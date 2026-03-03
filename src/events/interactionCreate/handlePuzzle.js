@@ -10,6 +10,9 @@ const {
 const PuzzleGame = require('../../models/PuzzleGame');
 const PuzzleSubmission = require('../../models/PuzzleSubmission');
 const UserPuzzleMasteryScore = require('../../models/UserPuzzleMasteryScore');
+const PuzzleMasteryRole = require('../../models/PuzzleMasteryRole');
+
+const announcementChannelId = '1469544882392666142';
 
 module.exports = async (client, interaction) => {
 
@@ -243,6 +246,60 @@ module.exports = async (client, interaction) => {
                             },
                             { upsert: true, new: true },
                         );
+
+                        //Set Puzzle Mastery Roles
+                        const updatedProfile = await UserPuzzleMasteryScore.findOne({ discordId: interaction.user.id });
+
+                        const guildConfiguredRoles = await PuzzleMasteryRole.find({ guildId: interaction.guild.id });
+                        const member = await interaction.guild.members.fetch(interaction.user.id);
+
+                        let roleAdded = null;
+
+                        if (guildConfiguredRoles.length > 0 && member) {
+                            guildConfiguredRoles.sort((a, b) => a.threshold - b.threshold);
+
+                            let highestEligibleRole = null;
+                            for (const roleConfig of guildConfiguredRoles) {
+                                if (updatedProfile.score >= roleConfig.threshold) {
+                                    highestEligibleRole = roleConfig;
+                                }
+                            }
+
+                            if (highestEligibleRole) {
+                                if (!member.roles.cache.has(highestEligibleRole.roleId)) {
+                                    try {
+                                        await member.roles.add(highestEligibleRole.roleId);
+                                        roleAdded = `<@&${highestEligibleRole.roleId}>`;
+                                    } catch (err) {
+                                        console.error(`Failed to assign role ${highestEligibleRole.roleId}:`, err);
+                                    }
+                                } else {
+                                    roleAdded = `<@&${highestEligibleRole.roleId}> (Already had)`;
+                                }
+
+                                for (const roleConfig of guildConfiguredRoles) {
+                                    if (roleConfig.roleId !== highestEligibleRole.roleId) {
+                                        if (member.roles.cache.has(roleConfig.roleId)) {
+                                            try {
+                                                await member.roles.remove(roleConfig.roleId);
+                                            } catch (err) {
+                                                console.error(`Failed to remove role ${roleConfig.roleId}:`, err);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (roleAdded && !roleAdded.includes('(Already had)')) {
+
+                            const announcementChannel = await interaction.guild.channels.fetch(announcementChannelId);
+                            if (announcementChannel) {
+                                await announcementChannel.send({
+                                    content: `**Congratulations** ${interaction.user}! You've reached a score of **${updatedProfile.score}** and earned the ${roleAdded} role!`
+                                });
+                            }
+                        }
                     }
 
                     // Build results embed
