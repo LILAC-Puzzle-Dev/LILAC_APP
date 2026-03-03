@@ -204,10 +204,10 @@ module.exports = {
 
                 const qAnswer = new TextInputBuilder()
                     .setCustomId('q-answer')
-                    .setLabel('Correct Answer')
+                    .setLabel('Correct Answers (comma-separated)')
                     .setStyle(TextInputStyle.Short)
                     .setRequired(true)
-                    .setMaxLength(100);
+                    .setMaxLength(500);
 
                 const qPoints = new TextInputBuilder()
                     .setCustomId('q-points')
@@ -233,7 +233,8 @@ module.exports = {
 
                 const qTitleVal = qModalInteraction.fields.getTextInputValue('q-title');
                 const qDescVal = qModalInteraction.fields.getTextInputValue('q-description');
-                const qAnswerVal = qModalInteraction.fields.getTextInputValue('q-answer');
+                const qAnswerVal = qModalInteraction.fields.getTextInputValue('q-answer')
+                    .split(',').map(a => a.trim()).filter(a => a.length > 0);
                 const qPointsVal = parseInt(qModalInteraction.fields.getTextInputValue('q-points'), 10);
 
                 if (isNaN(qPointsVal) || qPointsVal < 1) {
@@ -243,10 +244,17 @@ module.exports = {
                     });
                 }
 
+                if (qAnswerVal.length === 0) {
+                    return qModalInteraction.reply({
+                        content: '⚠️ At least one correct answer is required. Question was not added.',
+                        ephemeral: true,
+                    });
+                }
+
                 questions.push({
                     title: qTitleVal,
                     description: qDescVal,
-                    correct_answer: qAnswerVal,
+                    correct_answers: qAnswerVal,
                     points: qPointsVal,
                 });
 
