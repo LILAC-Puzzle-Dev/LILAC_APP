@@ -14,8 +14,9 @@ module.exports = async (client) => {
             config.achievementMessages ? Array.from(config.achievementMessages.keys()) : []
         );
         const hasNew = [...achievementIds].some((id) => !trackedIds.has(id));
+        const hasRemoved = [...trackedIds].some((id) => !achievementIds.has(id));
 
-        if (!hasNew) continue;
+        if (!hasNew && !hasRemoved) continue;
 
         const channel = client.channels.cache.get(config.leaderboardChannelId);
         if (!channel) continue;
