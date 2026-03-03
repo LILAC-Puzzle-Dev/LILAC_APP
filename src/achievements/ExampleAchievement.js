@@ -29,7 +29,7 @@ class ExampleAchievement {
      * @returns {Boolean} Whether the member meets the achievement criteria.
      */
     async check(member, userData) {
-        const user = await User.findOne({userId: member.id });
+        const user = await User.findOne({ userId: member.id, guildId: member.guild.id });
 
         return (user?.balance ?? 0) >= 10000;
     }
