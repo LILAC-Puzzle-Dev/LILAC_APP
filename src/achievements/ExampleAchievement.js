@@ -11,15 +11,15 @@ class ExampleAchievement {
         this.category = 'Economy';
 
         // Requirements
-        this.description = 'Obtain 1000 LILAC Coins.';
+        this.description = 'Obtain 10000 LILAC Coins.';
         this.dependsOn = null; //List of achievement IDs that must be obtained before this one can be earned, or null if no dependencies
 
         // Rewards
         this.roleRewards = [];
 
         // Visibility
-        this.isSecret = true;
-        this.isDisabled = true;
+        this.isSecret = false;
+        this.isDisabled = false;
     }
 
     /**
@@ -31,7 +31,7 @@ class ExampleAchievement {
     async check(member, userData) {
         const user = await User.findOne({userId: member.id });
 
-        return (user?.balance ?? 0) >= 1000;
+        return (user?.balance ?? 0) >= 10000;
     }
 }
 
