@@ -208,8 +208,9 @@ module.exports = async (client, interaction) => {
 
                     for (let i = 0; i < questions.length; i++) {
                         const userAnswer = allAnswers[i].trim().toLowerCase();
-                        const correctAnswer = questions[i].correct_answer.trim().toLowerCase();
-                        const isCorrect = userAnswer === correctAnswer;
+                        const isCorrect = questions[i].correct_answers.some(
+                            (a) => userAnswer === a.trim().toLowerCase()
+                        );
 
                         if (isCorrect) {
                             totalScore += questions[i].points;

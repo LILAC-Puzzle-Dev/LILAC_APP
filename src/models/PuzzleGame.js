@@ -9,8 +9,8 @@ const questionSchema = new Schema({
         type: String,
         required: true,
     },
-    correct_answer: {
-        type: String,
+    correct_answers: {
+        type: [String],
         required: true,
     },
     points: {
