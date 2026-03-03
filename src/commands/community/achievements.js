@@ -282,6 +282,10 @@ module.exports = {
                 userData = await UserAchievement.create({ userId: targetUser.id });
             }
 
+            if (!selfUserData) {
+                selfUserData = await UserAchievement.create({ userId: interaction.user.id });
+            }
+
             const achievements = getAchievements();
             const grouped = {};
 
