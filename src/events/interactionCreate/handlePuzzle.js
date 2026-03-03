@@ -20,7 +20,7 @@ module.exports = async (client, interaction) => {
     if (interaction.isStringSelectMenu() && interaction.customId.startsWith('puzzle-select-')) {
         const gameCustomId = interaction.values[0];
         try {
-            await interaction.deferReply();
+            await interaction.deferReply({ ephemeral: true });
 
             const game = await PuzzleGame.findOne({ custom_id: gameCustomId, status: 'active' });
 
@@ -195,7 +195,7 @@ module.exports = async (client, interaction) => {
                     if (!continueButtonInteraction) return;
                 } else {
                     // Last modal - process all answers
-                    await modalInteraction.deferReply();
+                    await modalInteraction.deferReply({ ephemeral: true });
 
                     // Check all fields are filled
                     const allFilled = allAnswers.every((a) => a && a.trim().length > 0);
