@@ -98,6 +98,12 @@ Add multiple words to the Wordle dictionary at once.
 #### /fetch-words
 Usage: `/fetch-words <topic> <length> [limit]`  
 Get a list of themed words from the API to add to the dictionary.
+#### /puzzle-create
+Usage: `/puzzle-create`  
+Create a new puzzle game with questions.
+#### /puzzle-manage
+Usage: `/puzzle-manage <custom_id>`  
+Manage an existing puzzle game.
 
 ### 3.3. Economy
 #### /balance
@@ -133,6 +139,9 @@ Create a new WotW event (Admins only).
 #### /wotw-disable
 Usage: `/wotw-disable <gameId>`  
 Disable an ongoing WotW event (Admins only).
+#### /puzzle
+Usage: `/puzzle`  
+Browse and play active puzzle games.
 
 ### 3.7. Chatscore
 #### /add-chatscore-role
