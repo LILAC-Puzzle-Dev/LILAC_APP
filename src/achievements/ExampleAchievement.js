@@ -1,22 +1,24 @@
+const User = require('../models/User');
+
 class ExampleAchievement {
     constructor() {
         // Metadata
-        this.id = 'first_message';
-        this.name = 'First Message';
-        this.emoji = '💬';
+        this.id = 'getting-started';
+        this.name = 'Gerting Started';
+        this.emoji = '💵';
         this.color = '#57F287';
         this.rarity = 'Common';
         this.category = 'Social';
 
         // Requirements
-        this.description = 'Send your first message in the server.';
+        this.description = 'Obtain 1000 LILAC Coins.';
         this.dependsOn = null;
 
         // Rewards
         this.roleRewards = [];
 
         // Visibility
-        this.isSecret = false;
+        this.isSecret = true;
     }
 
     /**
@@ -25,8 +27,10 @@ class ExampleAchievement {
      * @param {Object} userData - The user's stats from the database.
      * @returns {Boolean} Whether the member meets the achievement criteria.
      */
-    check(member, userData) {
-        return (userData.stats?.messagesSent ?? 0) >= 1;
+    async check(member, userData) {
+        const user = await User.findOne({userId: member.id });
+
+        return (user?.balance ?? 0) >= 1000;
     }
 }
 
