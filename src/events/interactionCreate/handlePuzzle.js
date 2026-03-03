@@ -187,7 +187,7 @@ module.exports = async (client, interaction) => {
                         i.customId === `puzzle-continue-${gameCustomId}-${modalIndex + 1}-${interaction.user.id}` &&
                         i.user.id === interaction.user.id;
 
-                    continueButtonInteraction = await modalInteraction.awaitMessageComponent({
+                    continueButtonInteraction = await modalInteraction.channel.awaitMessageComponent({
                         filter: btnFilter,
                         time: 600_000,
                     }).catch(() => null);
