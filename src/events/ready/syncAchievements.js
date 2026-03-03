@@ -10,7 +10,9 @@ module.exports = async (client) => {
     const achievementIds = new Set(achievements.map((a) => a.id));
 
     for (const config of configs) {
-        const trackedIds = new Set(config.achievementMessages?.keys() || []);
+        const trackedIds = new Set(
+            config.achievementMessages ? Array.from(config.achievementMessages.keys()) : []
+        );
         const hasNew = [...achievementIds].some((id) => !trackedIds.has(id));
 
         if (!hasNew) continue;
