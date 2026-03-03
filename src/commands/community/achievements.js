@@ -56,7 +56,6 @@ async function updateLeaderboard(client, guildId, achievementId) {
         );
 
     if (earners.length > 0) {
-        const firstEarner = earners[0];
         let earnerList = earners
             .map((u, i) => {
                 const tag = `<@${u.userId}>`;
@@ -186,7 +185,7 @@ module.exports = {
                     continue;
                 }
 
-                const qualifies = achievement.check(member, userData);
+                const qualifies = await achievement.check(member, userData);
                 if (!qualifies) continue;
 
                 userData.obtainedAchievements.push(achievement.id);
