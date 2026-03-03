@@ -6,13 +6,13 @@ class ExampleAchievement {
         this.id = 'getting-started';
         this.name = 'Gerting Started';
         this.emoji = '💵';
-        this.color = '#57F287';
-        this.rarity = 'Common';
+        this.color = '#57F287'; //#D1D5D8 (Common), #41A85F (Uncommon), #2C82C9 (Rare), #9365B8 (Epic), #FAC51C (Legendary), #FF55FF (Mythic)
+        this.rarity = 'Common'; //Option: 'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic'
         this.category = 'Social';
 
         // Requirements
         this.description = 'Obtain 1000 LILAC Coins.';
-        this.dependsOn = null;
+        this.dependsOn = null; //List of achievement IDs that must be obtained before this one can be earned, or null if no dependencies
 
         // Rewards
         this.roleRewards = [];
