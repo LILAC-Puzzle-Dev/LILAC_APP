@@ -10,31 +10,17 @@ const AchievementConfig = require('../../models/AchievementConfig');
 const RARITY_ORDER = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic'];
 const SECRET_COLOR = '#2c2f33';
 
-async function updateLeaderboard(client, guildId, achievementId) {
-    const config = await AchievementConfig.findOne({ guildId });
-    if (!config) return;
+function getEnabledAchievements() {
+    return getAchievements().filter((a) => !a.isDisabled);
+}
 
-    const messageId = config.achievementMessages.get(achievementId);
-    if (!messageId) return;
+function sortByRarity(achievements) {
+    return [...achievements].sort(
+        (a, b) => RARITY_ORDER.indexOf(a.rarity) - RARITY_ORDER.indexOf(b.rarity)
+    );
+}
 
-    const channel = client.channels.cache.get(config.leaderboardChannelId);
-    if (!channel) return;
-
-    let message;
-    try {
-        message = await channel.messages.fetch(messageId);
-    } catch {
-        return;
-    }
-
-    const achievements = getAchievements();
-    const achievement = achievements.find((a) => a.id === achievementId);
-    if (!achievement) return;
-
-    const earners = await UserAchievement.find({
-        obtainedAchievements: achievementId,
-    });
-
+async function buildAchievementEmbed(achievement, earners) {
     const isRevealed = earners.length > 0;
     const title = achievement.isSecret && !isRevealed
         ? '???'
@@ -72,11 +58,85 @@ async function updateLeaderboard(client, guildId, achievementId) {
         embed.addFields({ name: 'Earned By', value: 'No one yet!' });
     }
 
+    return embed;
+}
+
+async function updateLeaderboard(client, guildId, achievementId) {
+    const config = await AchievementConfig.findOne({ guildId });
+    if (!config) return;
+
+    const messageId = config.achievementMessages.get(achievementId);
+    if (!messageId) return;
+
+    const channel = client.channels.cache.get(config.leaderboardChannelId);
+    if (!channel) return;
+
+    let message;
+    try {
+        message = await channel.messages.fetch(messageId);
+    } catch {
+        return;
+    }
+
+    const achievements = getEnabledAchievements();
+    const achievement = achievements.find((a) => a.id === achievementId);
+    if (!achievement) return;
+
+    const earners = await UserAchievement.find({
+        obtainedAchievements: achievementId,
+    });
+
+    const embed = await buildAchievementEmbed(achievement, earners);
+
     try {
         await message.edit({ embeds: [embed] });
     } catch (err) {
         console.error(`Failed to update leaderboard for ${achievementId}:`, err);
     }
+}
+
+async function runSetup(client, channel, guildId) {
+    const achievements = sortByRarity(getEnabledAchievements());
+
+    // Delete old messages if they exist
+    const config = await AchievementConfig.findOne({ guildId });
+    if (config && config.achievementMessages) {
+        const oldChannel = client.channels.cache.get(config.leaderboardChannelId);
+        if (oldChannel) {
+            for (const [, msgId] of config.achievementMessages) {
+                try {
+                    const oldMsg = await oldChannel.messages.fetch(msgId);
+                    await oldMsg.delete();
+                } catch {
+                    // Message may already be deleted
+                }
+            }
+        }
+    }
+
+    const messageMap = new Map();
+
+    for (const achievement of achievements) {
+        const earners = await UserAchievement.find({
+            obtainedAchievements: achievement.id,
+        });
+
+        const embed = await buildAchievementEmbed(achievement, earners);
+
+        const sent = await channel.send({ embeds: [embed] });
+        messageMap.set(achievement.id, sent.id);
+    }
+
+    await AchievementConfig.findOneAndUpdate(
+        { guildId },
+        {
+            leaderboardChannelId: channel.id,
+            achievementMessages: messageMap,
+        },
+        { upsert: true },
+    );
+
+    return achievements.length;
 }
 
 module.exports = {
@@ -128,40 +188,9 @@ module.exports = {
             await interaction.deferReply({ ephemeral: true });
 
             const channel = interaction.options.getChannel('channel');
-            const achievements = getAchievements();
-            const messageMap = new Map();
+            const count = await runSetup(client, channel, interaction.guildId);
 
-            for (const achievement of achievements) {
-                const isHidden = achievement.isSecret;
-
-                const title = isHidden ? '???' : `${achievement.emoji} ${achievement.name}`;
-                const description = isHidden ? '???' : achievement.description;
-                const color = isHidden ? SECRET_COLOR : achievement.color;
-
-                const embed = new EmbedBuilder()
-                    .setTitle(title)
-                    .setDescription(description)
-                    .setColor(color)
-                    .addFields(
-                        { name: 'Rarity', value: achievement.rarity, inline: true },
-                        { name: 'Category', value: achievement.category, inline: true },
-                        { name: 'Earned By', value: 'No one yet!' },
-                    );
-
-                const sent = await channel.send({ embeds: [embed] });
-                messageMap.set(achievement.id, sent.id);
-            }
-
-            await AchievementConfig.findOneAndUpdate(
-                { guildId: interaction.guildId },
-                {
-                    leaderboardChannelId: channel.id,
-                    achievementMessages: messageMap,
-                },
-                { upsert: true },
-            );
-
-            return interaction.editReply(`Hall of Fame initialized in <#${channel.id}> with ${achievements.length} achievement(s).`);
+            return interaction.editReply(`Hall of Fame initialized in <#${channel.id}> with ${count} achievement(s).`);
         }
 
         // ── CHECK ──
@@ -175,7 +204,7 @@ module.exports = {
                 userData = await UserAchievement.create({ userId: member.id });
             }
 
-            const achievements = getAchievements();
+            const achievements = getEnabledAchievements();
             const newlyEarned = [];
 
             for (const achievement of achievements) {
@@ -231,7 +260,7 @@ module.exports = {
                 userData = await UserAchievement.create({ userId: targetUser.id });
             }
 
-            const achievements = getAchievements();
+            const achievements = getEnabledAchievements();
             const grouped = {};
 
             for (const achievement of achievements) {
@@ -271,4 +300,6 @@ module.exports = {
             return interaction.editReply({ embeds: [embed] });
         }
     },
+
+    runSetup,
 };

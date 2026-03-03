@@ -19,6 +19,7 @@ class LanternFestivalI {
 
         // Visibility
         this.isSecret = false;
+        this.isDisabled = false;
     }
 
     /**
