@@ -102,7 +102,7 @@ Get a list of themed words from the API to add to the dictionary.
 Usage: `/puzzle-create`  
 Create a new puzzle game with questions.
 #### /puzzle-manage
-Usage: `/puzzle-manage <gameId>`  
+Usage: `/puzzle-manage <custom_id>`  
 Manage an existing puzzle game.
 
 ### 3.3. Economy
