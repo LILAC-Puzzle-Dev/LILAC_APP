@@ -116,11 +116,33 @@ async function runSetup(client, channel, guildId) {
 
     const messageMap = new Map();
 
-    for (const achievement of achievements) {
-        const earners = await UserAchievement.find({
-            obtainedAchievements: achievement.id,
+    // Batch-load all earners for the relevant achievements in a single query
+    const achievementIds = achievements.map((a) => a.id);
+    let allEarners = [];
+    if (achievementIds.length > 0) {
+        allEarners = await UserAchievement.find({
+            obtainedAchievements: { $in: achievementIds },
         });
+    }
 
+    const earnersByAchievement = new Map();
+    for (const id of achievementIds) {
+        earnersByAchievement.set(id, []);
+    }
+
+    for (const earner of allEarners) {
+        const obtained = Array.isArray(earner.obtainedAchievements)
+            ? earner.obtainedAchievements
+            : [earner.obtainedAchievements];
+        for (const obtainedId of obtained) {
+            if (earnersByAchievement.has(obtainedId)) {
+                earnersByAchievement.get(obtainedId).push(earner);
+            }
+        }
+    }
+
+    for (const achievement of achievements) {
+        const earners = earnersByAchievement.get(achievement.id) || [];
         const embed = await buildAchievementEmbed(achievement, earners);
 
         const sent = await channel.send({ embeds: [embed] });
