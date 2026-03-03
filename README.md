@@ -165,7 +165,21 @@ Add Puzzle Mastery Score to a specific user (Admins only).
 Usage: `/puzzle-mastery [user]`  
 Check your or another member's total Puzzle Mastery Score and current role level.
 
-### 3.9. Miscellaneous
+### 3.9. Community
+#### /submit-media
+Usage: `/submit-media <file> [caption]`  
+Submit an image or file for admin approval.
+#### /achievements setup
+Usage: `/achievements setup <channel>`  
+Initialize the Hall of Fame in a channel.
+#### /achievements check
+Usage: `/achievements check`  
+Check and claim any achievements you qualify for.
+#### /achievements list
+Usage: `/achievements list [user]`  
+View a user's achievement progress.
+
+### 3.10. Miscellaneous
 #### /vc-time
 Usage: `/vc-time [user]`  
 Check your or another member's total time spent in voice channels.
