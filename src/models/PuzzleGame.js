@@ -43,6 +43,14 @@ const puzzleGameSchema = new Schema({
         enum: ['active', 'inactive'],
         default: 'inactive',
     },
+    expiration_time: {
+        type: String,
+        default: null,
+    },
+    expires_at: {
+        type: Date,
+        default: null,
+    },
     questions: [questionSchema],
 }, {
     timestamps: true,

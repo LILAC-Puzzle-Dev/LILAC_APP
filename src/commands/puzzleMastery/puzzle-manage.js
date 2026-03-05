@@ -10,7 +10,9 @@ const {
     ComponentType,
     ApplicationCommandOptionType,
 } = require('discord.js');
+const ms = require('ms');
 const PuzzleGame = require('../../models/PuzzleGame');
+const { scheduleExpiration, cancelExpiration } = require('../../utils/puzzleExpirationScheduler');
 
 module.exports = {
     name: 'puzzle-manage',
@@ -38,16 +40,25 @@ module.exports = {
         }
 
         const buildEmbed = () => {
+            const fields = [
+                { name: 'Custom ID', value: `\`${game.custom_id}\``, inline: true },
+                { name: 'Status', value: game.status.toUpperCase(), inline: true },
+                { name: 'Author', value: game.author, inline: true },
+                { name: 'Description', value: game.description.substring(0, 1024) },
+                { name: 'Questions', value: `${game.questions.length} question(s)` },
+            ];
+
+            if (game.expiration_time) {
+                const expirationValue = game.expires_at
+                    ? `\`${game.expiration_time}\` — expires <t:${Math.floor(game.expires_at.getTime() / 1000)}:R>`
+                    : `\`${game.expiration_time}\` (starts on next activation)`;
+                fields.push({ name: 'Expiration Time', value: expirationValue });
+            }
+
             const embed = new EmbedBuilder()
                 .setTitle(`Managing: ${game.title}`)
                 .setColor(game.status === 'active' ? '#00FF00' : '#FF4444')
-                .addFields(
-                    { name: 'Custom ID', value: `\`${game.custom_id}\``, inline: true },
-                    { name: 'Status', value: game.status.toUpperCase(), inline: true },
-                    { name: 'Author', value: game.author, inline: true },
-                    { name: 'Description', value: game.description.substring(0, 1024) },
-                    { name: 'Questions', value: `${game.questions.length} question(s)` },
-                );
+                .addFields(...fields);
             return embed;
         };
 
@@ -93,8 +104,21 @@ module.exports = {
             }
 
             if (btnInteraction.customId === `pm-toggle-${interaction.user.id}`) {
-                game.status = game.status === 'active' ? 'inactive' : 'active';
-                await game.save();
+                if (game.status === 'active') {
+                    game.status = 'inactive';
+                    game.expires_at = null;
+                    await game.save();
+                    cancelExpiration(game.custom_id);
+                } else {
+                    game.status = 'active';
+                    if (game.expiration_time) {
+                        game.expires_at = new Date(Date.now() + ms(game.expiration_time));
+                        await game.save();
+                        scheduleExpiration(game.custom_id, game.expires_at);
+                    } else {
+                        await game.save();
+                    }
+                }
 
                 return btnInteraction.update({
                     embeds: [buildEmbed()],
