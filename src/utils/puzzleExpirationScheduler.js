@@ -53,7 +53,7 @@ async function resumeExpirations() {
     try {
         const activeGames = await PuzzleGame.find({
             status: 'active',
-            expires_at: { $ne: null },
+            expires_at: { $ne: null, $exists: true },
         });
 
         for (const game of activeGames) {
