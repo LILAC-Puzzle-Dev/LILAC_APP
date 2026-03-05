@@ -12,10 +12,11 @@ async function expireGame(customId) {
         game.expires_at = null;
         await game.save();
 
-        timers.delete(customId);
         console.log(`[PuzzleExpiration] Game "${customId}" automatically set to inactive after expiration.`);
     } catch (error) {
         console.error(`[PuzzleExpiration] Error expiring game "${customId}":`, error);
+    } finally {
+        timers.delete(customId);
     }
 }
 
