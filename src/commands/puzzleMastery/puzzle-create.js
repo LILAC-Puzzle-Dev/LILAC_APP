@@ -9,6 +9,7 @@ const {
     EmbedBuilder,
     ComponentType,
 } = require('discord.js');
+const ms = require('ms');
 const PuzzleGame = require('../../models/PuzzleGame');
 
 function isUrlFriendly(str) {
@@ -53,11 +54,19 @@ module.exports = {
             .setRequired(true)
             .setMaxLength(100);
 
+        const expirationInput = new TextInputBuilder()
+            .setCustomId('puzzle-expiration')
+            .setLabel('Expiration Time (optional, e.g. 10m, 3h, 5d, 2w)')
+            .setStyle(TextInputStyle.Short)
+            .setRequired(false)
+            .setMaxLength(20);
+
         modal.addComponents(
             new ActionRowBuilder().addComponents(titleInput),
             new ActionRowBuilder().addComponents(customIdInput),
             new ActionRowBuilder().addComponents(descInput),
             new ActionRowBuilder().addComponents(authorInput),
+            new ActionRowBuilder().addComponents(expirationInput),
         );
 
         await interaction.showModal(modal);
@@ -71,6 +80,19 @@ module.exports = {
         const customId = modalInteraction.fields.getTextInputValue('puzzle-custom-id').toLowerCase().trim();
         const description = modalInteraction.fields.getTextInputValue('puzzle-description');
         const author = modalInteraction.fields.getTextInputValue('puzzle-author');
+        const rawExpiration = modalInteraction.fields.getTextInputValue('puzzle-expiration').trim();
+
+        let expirationTime = null;
+        if (rawExpiration) {
+            const expirationMs = ms(rawExpiration);
+            if (!expirationMs || expirationMs <= 0) {
+                return modalInteraction.reply({
+                    content: `⚠️ Invalid expiration time \`${rawExpiration}\`. Use a format like \`10m\`, \`3h\`, \`5d\`, or \`2w\`.`,
+                    ephemeral: true,
+                });
+            }
+            expirationTime = rawExpiration;
+        }
 
         if (!isUrlFriendly(customId)) {
             return modalInteraction.reply({
@@ -92,7 +114,7 @@ module.exports = {
         const questionEmbed = () => {
             const embed = new EmbedBuilder()
                 .setTitle(`Creating: ${title}`)
-                .setDescription(`**Custom ID:** \`${customId}\`\n**Author:** ${author}\n**Description:** ${description}`)
+                .setDescription(`**Custom ID:** \`${customId}\`\n**Author:** ${author}\n**Description:** ${description}${expirationTime ? `\n**Expiration Time:** \`${expirationTime}\`` : ''}`)
                 .setColor('#7B68EE')
                 .setFooter({ text: `Questions added: ${questions.length}` });
 
@@ -165,6 +187,7 @@ module.exports = {
                         description,
                         author,
                         questions,
+                        expiration_time: expirationTime,
                     });
                     await game.save();
 
