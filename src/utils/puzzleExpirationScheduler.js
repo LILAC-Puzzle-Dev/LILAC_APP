@@ -20,13 +20,13 @@ async function expireGame(customId) {
     }
 }
 
-function scheduleExpiration(customId, expiresAt) {
+async function scheduleExpiration(customId, expiresAt) {
     cancelExpiration(customId);
 
     const delay = expiresAt.getTime() - Date.now();
 
     if (delay <= 0) {
-        expireGame(customId);
+        await expireGame(customId);
         return;
     }
 
@@ -57,7 +57,7 @@ async function resumeExpirations() {
         });
 
         for (const game of activeGames) {
-            scheduleExpiration(game.custom_id, game.expires_at);
+            await scheduleExpiration(game.custom_id, game.expires_at);
         }
 
         if (activeGames.length > 0) {
