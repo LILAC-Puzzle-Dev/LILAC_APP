@@ -107,6 +107,12 @@ Create a new puzzle game with questions.
 #### /puzzle-manage
 Usage: `/puzzle-manage <custom_id>`  
 Manage an existing puzzle game.
+#### /sticky add
+Usage: `/sticky add <channel> <message>`  
+Set a sticky message for a channel.
+#### /sticky remove
+Usage: `/sticky remove <channel>`  
+Remove the sticky message from a channel.
 
 ### 3.3. Economy
 #### /balance

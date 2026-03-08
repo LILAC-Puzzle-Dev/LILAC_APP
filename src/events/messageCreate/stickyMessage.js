@@ -2,7 +2,7 @@ const StickyMessage = require('../../models/StickyMessage');
 const { deleteStickyMessage } = require('../../utils/deleteStickyMessage');
 
 module.exports = async (client, message) => {
-    if (message.author?.bot || !message.guild) return;
+    if (!message.guild) return;
 
     try {
         const sticky = await StickyMessage.findOne({ channelId: message.channel.id });
