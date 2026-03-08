@@ -1,4 +1,4 @@
-const { PermissionFlagsBits, ApplicationCommandOptionType } = require('discord.js');
+const { PermissionFlagsBits, ApplicationCommandOptionType, ChannelType } = require('discord.js');
 const StickyMessage = require('../../models/StickyMessage');
 const { deleteStickyMessage } = require('../../utils/deleteStickyMessage');
 
@@ -13,6 +13,10 @@ module.exports = {
         if (subcommand === 'add') {
             const channel = interaction.options.getChannel('channel');
             const content = interaction.options.getString('message');
+
+            if (!channel.isTextBased()) {
+                return interaction.reply({ content: 'Please select a text-based channel.', ephemeral: true });
+            }
 
             try {
                 await StickyMessage.findOneAndUpdate(
@@ -33,6 +37,10 @@ module.exports = {
 
         if (subcommand === 'remove') {
             const channel = interaction.options.getChannel('channel');
+
+            if (!channel.isTextBased()) {
+                return interaction.reply({ content: 'Please select a text-based channel.', ephemeral: true });
+            }
 
             try {
                 const deleted = await StickyMessage.findOneAndDelete({ channelId: channel.id });
@@ -72,6 +80,13 @@ module.exports = {
                     name: 'channel',
                     description: 'The channel to sticky the message in.',
                     type: ApplicationCommandOptionType.Channel,
+                    channelTypes: [
+                        ChannelType.GuildText,
+                        ChannelType.GuildAnnouncement,
+                        ChannelType.PublicThread,
+                        ChannelType.PrivateThread,
+                        ChannelType.AnnouncementThread,
+                    ],
                     required: true,
                 },
                 {
@@ -91,6 +106,13 @@ module.exports = {
                     name: 'channel',
                     description: 'The channel to remove the sticky message from.',
                     type: ApplicationCommandOptionType.Channel,
+                    channelTypes: [
+                        ChannelType.GuildText,
+                        ChannelType.GuildAnnouncement,
+                        ChannelType.PublicThread,
+                        ChannelType.PrivateThread,
+                        ChannelType.AnnouncementThread,
+                    ],
                     required: true,
                 },
             ],
