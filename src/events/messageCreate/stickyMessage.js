@@ -1,4 +1,5 @@
 const StickyMessage = require('../../models/StickyMessage');
+const { deleteStickyMessage } = require('../../utils/deleteStickyMessage');
 
 module.exports = async (client, message) => {
     if (message.author?.bot || !message.guild) return;
@@ -8,12 +9,7 @@ module.exports = async (client, message) => {
         if (!sticky) return;
 
         // Delete the previous sticky message if it exists
-        if (sticky.lastMessageId) {
-            const previous =
-                message.channel.messages.cache.get(sticky.lastMessageId) ||
-                await message.channel.messages.fetch(sticky.lastMessageId).catch(() => null);
-            if (previous) await previous.delete().catch(() => null);
-        }
+        await deleteStickyMessage(message.channel, sticky.lastMessageId);
 
         // Send the new sticky message
         const sent = await message.channel.send(sticky.content);

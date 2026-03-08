@@ -1,5 +1,6 @@
 const { PermissionFlagsBits, ApplicationCommandOptionType } = require('discord.js');
 const StickyMessage = require('../../models/StickyMessage');
+const { deleteStickyMessage } = require('../../utils/deleteStickyMessage');
 
 module.exports = {
     callback: async (client, interaction) => {
@@ -44,12 +45,7 @@ module.exports = {
                 }
 
                 // Clean up the last posted sticky message from the channel
-                if (deleted.lastMessageId) {
-                    const previous =
-                        channel.messages.cache.get(deleted.lastMessageId) ||
-                        await channel.messages.fetch(deleted.lastMessageId).catch(() => null);
-                    if (previous) await previous.delete().catch(() => null);
-                }
+                await deleteStickyMessage(channel, deleted.lastMessageId);
 
                 return interaction.reply({
                     content: `Sticky message removed from ${channel}.`,
