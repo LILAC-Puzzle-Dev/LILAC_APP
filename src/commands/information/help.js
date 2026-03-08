@@ -4,6 +4,7 @@ const {
     ButtonBuilder,
     ButtonStyle,
     ApplicationCommandOptionType,
+    PermissionFlagsBits,
 } = require('discord.js');
 const path = require('path');
 const getAllFiles = require('../../utils/getAllFiles');
@@ -17,6 +18,19 @@ function parseCategoryName(folderName) {
         .replace(/([A-Z])/g, ' $1')
         .replace(/^./, (str) => str.toUpperCase())
         .trim();
+}
+
+/**
+ * Checks if a command requires admin permissions.
+ */
+function requiresAdminPermission(command) {
+    if (!command.permissionsRequired) return false;
+
+    const adminPerms = [
+        PermissionFlagsBits.Administrator,
+    ];
+
+    return command.permissionsRequired.some(perm => adminPerms.includes(perm));
 }
 
 /**
@@ -43,16 +57,17 @@ function buildHelpPages() {
             const command = require(commandFile);
             if (command.deleted) continue;
 
+            const adminEmoji = requiresAdminPermission(command) ? ' ⛔' : '';
             const subcommands = (command.options || []).filter(
                 (opt) => opt.type === ApplicationCommandOptionType.Subcommand || opt.type === 1,
             );
 
             if (subcommands.length > 0) {
                 for (const sub of subcommands) {
-                    lines.push(`\`/${command.name} ${sub.name}\` — ${sub.description}`);
+                    lines.push(`\`/${command.name} ${sub.name}\` —${adminEmoji} ${sub.description}`);
                 }
             } else {
-                lines.push(`\`/${command.name}\` — ${command.description}`);
+                lines.push(`\`/${command.name}\` —${adminEmoji} ${command.description}`);
             }
         }
 
@@ -124,7 +139,6 @@ module.exports = {
             fetchReply: true,
         });
 
-        // Remove navigation buttons after 5 minutes to keep the channel tidy.
         const timer = setTimeout(async () => {
             try {
                 await message.edit({ components: [] });
@@ -133,11 +147,9 @@ module.exports = {
             }
         }, 5 * 60 * 1000);
 
-        // Allow the timer to be garbage-collected if the Node process exits cleanly.
         if (timer.unref) timer.unref();
     },
 
-    // Export helpers so the button handler can reuse them.
     buildHelpPages,
     buildEmbed,
     buildButtons,
