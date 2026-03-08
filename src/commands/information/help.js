@@ -30,13 +30,13 @@ function buildHelpPages() {
     if (cachedPages) return cachedPages;
 
     const commandsDir = path.join(__dirname, '..', '..', 'commands');
-    const categories = getAllFiles(commandsDir, true);
+    const categories = getAllFiles(commandsDir, true).sort();
     const pages = [];
 
     for (const categoryPath of categories) {
         const categoryName = path.basename(categoryPath);
         const readableName = parseCategoryName(categoryName);
-        const commandFiles = getAllFiles(categoryPath);
+        const commandFiles = getAllFiles(categoryPath).sort();
         const lines = [];
 
         for (const commandFile of commandFiles) {
