@@ -8,7 +8,6 @@ module.exports = async (client, interaction) => {
     ) return;
 
     // Custom ID format: help_{direction}_{userId}_{currentPage}
-    // User IDs are numeric snowflakes, so splitting by '_' is safe.
     const parts = interaction.customId.split('_');
 
     // Validate basic format: help_{direction}_{userId}_{currentPage}
@@ -19,11 +18,10 @@ module.exports = async (client, interaction) => {
         });
     }
 
-    const direction = parts[1];       // 'prev' or 'next'
-    const userId = parts[2];          // originating user's ID
+    const direction = parts[1];
+    const userId = parts[2];
     const parsedPage = Number(parts[3]);
 
-    // Validate direction and page number
     if ((direction !== 'prev' && direction !== 'next') || !Number.isInteger(parsedPage)) {
         return interaction.reply({
             content: 'Invalid help navigation data.',
@@ -32,7 +30,6 @@ module.exports = async (client, interaction) => {
     }
 
     const currentPage = parsedPage;
-    // Only the user who ran /help may navigate.
     if (interaction.user.id !== userId) {
         return interaction.reply({
             content: 'Only the user who ran this command can navigate the pages.',
