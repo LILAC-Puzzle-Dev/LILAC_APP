@@ -17,7 +17,7 @@ module.exports = {
             try {
                 await StickyMessage.findOneAndUpdate(
                     { channelId: channel.id },
-                    { guildId: interaction.guild.id, channelId: channel.id, content, lastMessageId: null },
+                    { guildId: interaction.guild.id, channelId: channel.id, content },
                     { upsert: true }
                 );
 
