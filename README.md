@@ -36,6 +36,9 @@ Terms of Services archive server provider: [Trilleo Network](https://trilleo.net
 Arguments with "< >" symbol are required. Those with "[ ]" symbol are optional.
 
 ### 3.1. Information Check
+#### /help
+Usage: `/help`  
+Browse all available commands by category.
 #### /credits
 Usage: `/credits`  
 See the credits of LILAC APP and LILAC Puzzle Official.
