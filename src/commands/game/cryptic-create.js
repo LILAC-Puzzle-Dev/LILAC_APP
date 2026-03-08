@@ -101,6 +101,4 @@ module.exports = {
             required: true,
         },
     ],
-    permissionsRequired: [PermissionFlagsBits.Administrator],
-    botPermissions: [PermissionFlagsBits.Administrator],
 }
