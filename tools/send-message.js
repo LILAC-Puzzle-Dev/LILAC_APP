@@ -627,4 +627,26 @@ client.on('ready', async (c) => {
 })
 */
 
+// commands channel info
+
+client.on('ready', async (c) => {
+
+    const messageEmbed = {
+        title: "LILAC Puzzle Official Commands Channel",
+        description: "You can only use **application commands** here!\n\nDo `/help` to see the list of available commands.",
+    }
+
+    try {
+        const channel = await client.channels.cache.get('1395678665269841950');
+        if (!channel) return;
+
+        await channel.send({
+            embeds: [messageEmbed],
+        })
+        process.exit();
+    } catch (error){
+        console.log(error);
+    }
+})
+
 client.login(process.env.TOKEN);
