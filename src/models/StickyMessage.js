@@ -12,7 +12,15 @@ const stickyMessageSchema = new mongoose.Schema({
     },
     content: {
         type: String,
-        required: true,
+        default: null,
+    },
+    embeds: {
+        type: [mongoose.Schema.Types.Mixed],
+        default: [],
+    },
+    components: {
+        type: [mongoose.Schema.Types.Mixed],
+        default: [],
     },
     lastMessageId: {
         type: String,
