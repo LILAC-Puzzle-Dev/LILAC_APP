@@ -113,6 +113,9 @@ Set a sticky message for a channel.
 #### /sticky remove
 Usage: `/sticky remove <channel>`  
 Remove the sticky message from a channel.
+#### /sticky convert
+Usage: `/sticky convert <message>`  
+Convert an existing message into a sticky message for its channel.
 
 ### 3.3. Economy
 #### /balance
