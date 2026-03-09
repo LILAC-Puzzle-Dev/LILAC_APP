@@ -9,7 +9,8 @@ module.exports = async (client, message) => {
 
     try {
         const sticky = await StickyMessage.findOne({ channelId: message.channel.id });
-        if (!sticky || message.content === sticky?.content) return;
+        if (!sticky) return;
+        if (message.id === sticky.lastMessageId) return;
 
         // Delete the previous sticky message if it exists
         await deleteStickyMessage(message.channel, sticky.lastMessageId);
