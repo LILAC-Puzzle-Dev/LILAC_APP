@@ -3,11 +3,13 @@ const { deleteStickyMessage } = require('../../utils/deleteStickyMessage');
 
 module.exports = async (client, message) => {
     if (!message.guild) return;
-    if (message.author.id === client.user.id) return;
+    if (message.author.id === client.user.id && message.channel.id !== "1395678665269841950") {
+        return;
+    }
 
     try {
         const sticky = await StickyMessage.findOne({ channelId: message.channel.id });
-        if (!sticky) return;
+        if (!sticky || message.content === sticky?.content) return;
 
         // Delete the previous sticky message if it exists
         await deleteStickyMessage(message.channel, sticky.lastMessageId);
