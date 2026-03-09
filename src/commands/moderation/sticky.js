@@ -19,9 +19,18 @@ module.exports = {
             }
 
             try {
+                // Delete any existing sticky message in this channel
+                const existing = await StickyMessage.findOne({ channelId: channel.id });
+                if (existing) {
+                    await deleteStickyMessage(channel, existing.lastMessageId);
+                }
+
+                // Send the sticky message immediately
+                const sent = await channel.send(content);
+
                 await StickyMessage.findOneAndUpdate(
                     { channelId: channel.id },
-                    { guildId: interaction.guild.id, channelId: channel.id, content },
+                    { guildId: interaction.guild.id, channelId: channel.id, content, embeds: [], components: [], lastMessageId: sent.id },
                     { upsert: true }
                 );
 
@@ -32,6 +41,91 @@ module.exports = {
             } catch (error) {
                 console.error('Error setting sticky message:', error);
                 return interaction.reply({ content: 'Failed to set sticky message.', ephemeral: true });
+            }
+        }
+
+        if (subcommand === 'convert') {
+            const messageLink = interaction.options.getString('message');
+
+            // Parse Discord message link: https://discord.com/channels/{guildId}/{channelId}/{messageId}
+            const match = messageLink.match(
+                /https:\/\/(?:ptb\.|canary\.)?discord(?:app)?\.com\/channels\/(\d+)\/(\d+)\/(\d+)/
+            );
+
+            if (!match) {
+                return interaction.reply({
+                    content: 'Invalid message link. Please provide a valid Discord message link.',
+                    ephemeral: true,
+                });
+            }
+
+            const [, linkGuildId, channelId, messageId] = match;
+
+            if (linkGuildId !== interaction.guild.id) {
+                return interaction.reply({
+                    content: 'The message must be from this server.',
+                    ephemeral: true,
+                });
+            }
+
+            const channel = await interaction.guild.channels.fetch(channelId).catch(() => null);
+
+            if (!channel || !channel.isTextBased()) {
+                return interaction.reply({
+                    content: 'Could not find the channel from the message link.',
+                    ephemeral: true,
+                });
+            }
+
+            const targetMessage = await channel.messages.fetch(messageId).catch(() => null);
+
+            if (!targetMessage) {
+                return interaction.reply({
+                    content: 'Could not find the message. Make sure the link is valid and the bot has access to that channel.',
+                    ephemeral: true,
+                });
+            }
+
+            const content = targetMessage.content || null;
+            const embeds = targetMessage.embeds.map(e => e.toJSON());
+            const components = targetMessage.components.map(c => c.toJSON());
+
+            if (!content && embeds.length === 0) {
+                return interaction.reply({
+                    content: 'The message has no text content or embeds to use as a sticky message.',
+                    ephemeral: true,
+                });
+            }
+
+            try {
+                // Delete any existing sticky message in this channel
+                const existing = await StickyMessage.findOne({ channelId: channel.id });
+                if (existing) {
+                    await deleteStickyMessage(channel, existing.lastMessageId);
+                }
+
+                // Build the payload from the target message
+                const payload = {};
+                if (content) payload.content = content;
+                if (embeds.length > 0) payload.embeds = embeds;
+                if (components.length > 0) payload.components = components;
+
+                // Send the sticky message immediately
+                const sent = await channel.send(payload);
+
+                await StickyMessage.findOneAndUpdate(
+                    { channelId: channel.id },
+                    { guildId: interaction.guild.id, channelId: channel.id, content, embeds, components, lastMessageId: sent.id },
+                    { upsert: true }
+                );
+
+                return interaction.reply({
+                    content: `Message has been converted to a sticky message in ${channel}.`,
+                    ephemeral: true,
+                });
+            } catch (error) {
+                console.error('Error converting sticky message:', error);
+                return interaction.reply({ content: 'Failed to convert the message to a sticky message.', ephemeral: true });
             }
         }
 
@@ -92,6 +186,19 @@ module.exports = {
                 {
                     name: 'message',
                     description: 'The message to automatically repost at the bottom of the channel.',
+                    type: ApplicationCommandOptionType.String,
+                    required: true,
+                },
+            ],
+        },
+        {
+            name: 'convert',
+            description: 'Convert an existing message into a sticky message for its channel.',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'message',
+                    description: 'The Discord message link of the message to convert into a sticky.',
                     type: ApplicationCommandOptionType.String,
                     required: true,
                 },
