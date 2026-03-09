@@ -8,6 +8,8 @@ module.exports = {
             return interaction.reply({ content: 'This command can only be used in a server.', ephemeral: true });
         }
 
+        await interaction.deferReply({ ephemeral: true });
+
         const subcommand = interaction.options.getSubcommand();
 
         if (subcommand === 'add') {
@@ -15,7 +17,7 @@ module.exports = {
             const content = interaction.options.getString('message');
 
             if (!channel.isTextBased()) {
-                return interaction.reply({ content: 'Please select a text-based channel.', ephemeral: true });
+                return interaction.editReply({ content: 'Please select a text-based channel.' });
             }
 
             try {
@@ -34,13 +36,12 @@ module.exports = {
                     { upsert: true }
                 );
 
-                return interaction.reply({
+                return interaction.editReply({
                     content: `Sticky message set for ${channel}:\n> ${content}`,
-                    ephemeral: true,
                 });
             } catch (error) {
                 console.error('Error setting sticky message:', error);
-                return interaction.reply({ content: 'Failed to set sticky message.', ephemeral: true });
+                return interaction.editReply({ content: 'Failed to set sticky message.' });
             }
         }
 
@@ -53,36 +54,32 @@ module.exports = {
             );
 
             if (!match) {
-                return interaction.reply({
+                return interaction.editReply({
                     content: 'Invalid message link. Please provide a valid Discord message link.',
-                    ephemeral: true,
                 });
             }
 
             const [, linkGuildId, channelId, messageId] = match;
 
             if (linkGuildId !== interaction.guild.id) {
-                return interaction.reply({
+                return interaction.editReply({
                     content: 'The message must be from this server.',
-                    ephemeral: true,
                 });
             }
 
             const channel = await interaction.guild.channels.fetch(channelId).catch(() => null);
 
             if (!channel || !channel.isTextBased()) {
-                return interaction.reply({
+                return interaction.editReply({
                     content: 'Could not find the channel from the message link.',
-                    ephemeral: true,
                 });
             }
 
             const targetMessage = await channel.messages.fetch(messageId).catch(() => null);
 
             if (!targetMessage) {
-                return interaction.reply({
+                return interaction.editReply({
                     content: 'Could not find the message. Make sure the link is valid and the bot has access to that channel.',
-                    ephemeral: true,
                 });
             }
 
@@ -91,9 +88,8 @@ module.exports = {
             const components = targetMessage.components.map(c => c.toJSON());
 
             if (!content && embeds.length === 0) {
-                return interaction.reply({
+                return interaction.editReply({
                     content: 'The message has no text content or embeds to use as a sticky message.',
-                    ephemeral: true,
                 });
             }
 
@@ -119,13 +115,12 @@ module.exports = {
                     { upsert: true }
                 );
 
-                return interaction.reply({
+                return interaction.editReply({
                     content: `Message has been converted to a sticky message in ${channel}.`,
-                    ephemeral: true,
                 });
             } catch (error) {
                 console.error('Error converting sticky message:', error);
-                return interaction.reply({ content: 'Failed to convert the message to a sticky message.', ephemeral: true });
+                return interaction.editReply({ content: 'Failed to convert the message to a sticky message.' });
             }
         }
 
@@ -133,29 +128,27 @@ module.exports = {
             const channel = interaction.options.getChannel('channel');
 
             if (!channel.isTextBased()) {
-                return interaction.reply({ content: 'Please select a text-based channel.', ephemeral: true });
+                return interaction.editReply({ content: 'Please select a text-based channel.' });
             }
 
             try {
                 const deleted = await StickyMessage.findOneAndDelete({ channelId: channel.id });
 
                 if (!deleted) {
-                    return interaction.reply({
+                    return interaction.editReply({
                         content: `There is no sticky message set for ${channel}.`,
-                        ephemeral: true,
                     });
                 }
 
                 // Clean up the last posted sticky message from the channel
                 await deleteStickyMessage(channel, deleted.lastMessageId);
 
-                return interaction.reply({
+                return interaction.editReply({
                     content: `Sticky message removed from ${channel}.`,
-                    ephemeral: true,
                 });
             } catch (error) {
                 console.error('Error removing sticky message:', error);
-                return interaction.reply({ content: 'Failed to remove sticky message.', ephemeral: true });
+                return interaction.editReply({ content: 'Failed to remove sticky message.' });
             }
         }
     },
