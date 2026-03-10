@@ -147,30 +147,32 @@ class Captcha {
 
         modal.addComponents(new ActionRowBuilder().addComponents(textInput));
 
-        await btnInteraction.showModal(modal);
+        try {
+            await btnInteraction.showModal(modal);
 
-        // Await the modal submission
-        const modalFilter = (i) => i.customId === modalId && i.user.id === member.id;
-        const modalInteraction = await btnInteraction
-            .awaitModalSubmit({ filter: modalFilter, time: remaining })
-            .catch(() => null);
+            // Await the modal submission
+            const modalFilter = (i) => i.customId === modalId && i.user.id === member.id;
+            const modalInteraction = await btnInteraction
+                .awaitModalSubmit({ filter: modalFilter, time: remaining })
+                .catch(() => null);
 
-        await message.delete().catch(() => null);
+            if (!modalInteraction) {
+                return false;
+            }
 
-        if (!modalInteraction) {
-            return false;
+            const userInput = modalInteraction.fields.getTextInputValue(inputId).trim();
+            const userAnswer = parseInt(userInput, 10);
+            const success = !isNaN(userAnswer) && userAnswer === answer;
+
+            // Acknowledge the modal with an ephemeral reply
+            await modalInteraction
+                .deferReply({ ephemeral: true })
+                .catch(() => null);
+
+            return success;
+        } finally {
+            await message.delete().catch(() => null);
         }
-
-        const userInput = modalInteraction.fields.getTextInputValue(inputId).trim();
-        const userAnswer = parseInt(userInput, 10);
-        const success = !isNaN(userAnswer) && userAnswer === answer;
-
-        // Acknowledge the modal with an ephemeral reply
-        await modalInteraction
-            .deferReply({ ephemeral: true })
-            .catch(() => null);
-
-        return success;
     }
 }
 
