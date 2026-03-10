@@ -7,6 +7,16 @@ module.exports = async (client, message) => {
         return;
     }
 
+    // Skip CAPTCHA messages to prevent sticky message spam
+    if (message.embeds.length > 0) {
+        const hasCapatchaEmbed = message.embeds.some(embed =>
+            embed.title?.includes('CAPTCHA')
+        );
+        if (hasCapatchaEmbed) {
+            return;
+        }
+    }
+
     try {
         const sticky = await StickyMessage.findOne({ channelId: message.channel.id });
         if (!sticky) return;
