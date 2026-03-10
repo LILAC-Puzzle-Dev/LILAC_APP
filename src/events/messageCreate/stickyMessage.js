@@ -9,10 +9,10 @@ module.exports = async (client, message) => {
 
     // Skip CAPTCHA messages to prevent sticky message spam
     if (message.embeds.length > 0) {
-        const hasCapatchaEmbed = message.embeds.some(embed =>
+        const hasCaptchaEmbed = message.embeds.some(embed =>
             embed.title?.includes('CAPTCHA')
         );
-        if (hasCapatchaEmbed) {
+        if (hasCaptchaEmbed) {
             return;
         }
     }
