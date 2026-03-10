@@ -169,6 +169,15 @@ class Captcha {
                 .deferReply({ ephemeral: true })
                 .catch(() => null);
 
+            try {
+                const replyContent = success
+                    ? 'Answer received. You passed the CAPTCHA.'
+                    : 'Incorrect answer. CAPTCHA failed.';
+                await modalInteraction.editReply({ content: replyContent });
+            } catch (_) {
+                // If the interaction was already acknowledged or failed, ignore the error
+            }
+
             return success;
         } finally {
             await message.delete().catch(() => null);
