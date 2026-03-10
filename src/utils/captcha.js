@@ -90,12 +90,40 @@ class Captcha {
 
         const startTime = Date.now();
 
-        // Wait for the target member to click the button
-        const btnFilter = (i) => i.isButton() && i.user.id === member.id && i.customId === buttonId;
-        const btnInteraction = await message
-            .awaitMessageComponent({ filter: btnFilter, time: TIME_LIMIT })
-            .catch(() => null);
+        // Collect button clicks and handle non-target users explicitly
+        let btnInteraction = null;
 
+        const collector = message.createMessageComponentCollector({
+            time: TIME_LIMIT,
+            filter: (i) => i.customId === buttonId,
+        });
+
+        await new Promise((resolve) => {
+            collector.on('collect', async (i) => {
+                // Only the target member can complete this CAPTCHA
+                if (i.user.id !== member.id) {
+                    if (i.isRepliable() && !i.replied && !i.deferred) {
+                        await i
+                            .reply({
+                                content: 'Only the specified member can use this button.',
+                                ephemeral: true,
+                            })
+                            .catch(() => null);
+                    }
+                    return;
+                }
+
+                btnInteraction = i;
+                collector.stop('answered');
+                resolve();
+            });
+
+            collector.on('end', (_collected, reason) => {
+                if (reason !== 'answered') {
+                    resolve();
+                }
+            });
+        });
         if (!btnInteraction) {
             await message.delete().catch(() => null);
             return false;
