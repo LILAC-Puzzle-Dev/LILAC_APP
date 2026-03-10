@@ -5,7 +5,7 @@ module.exports = {
     description: 'Test the CAPTCHA verification system.',
 
     callback: async (client, interaction) => {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply();
 
         const member = interaction.member;
         const channel = interaction.channel;
