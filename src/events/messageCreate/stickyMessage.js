@@ -3,9 +3,6 @@ const { deleteStickyMessage } = require('../../utils/deleteStickyMessage');
 
 module.exports = async (client, message) => {
     if (!message.guild) return;
-    if (message.author.id === client.user.id && message.channel.id !== "1395678665269841950") {
-        return;
-    }
 
     // Skip CAPTCHA messages to prevent sticky message spam
     if (message.embeds.length > 0) {
