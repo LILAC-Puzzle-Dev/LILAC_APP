@@ -12,7 +12,7 @@
   "dependencies": {
     "@discord/embedded-app-sdk": "^2.4.0",
     "canvacord": "^6.0.2",
-    "commandkit": "^0.1.10",
+    "commandkit": "^1.2.1",
     "discord.js": "^14.21.0",
     "dotenv": "^17.2.0",
     "mongoose": "^8.16.4",
